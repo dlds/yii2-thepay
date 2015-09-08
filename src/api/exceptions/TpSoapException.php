@@ -1,5 +1,9 @@
 <?php
-require_once implode(DIRECTORY_SEPARATOR, array(__DIR__, 'TpException.php'));
+
+namespace dlds\thepay\api\exceptions;
+
+use dlds\thepay\api\exceptions\TpException;
+
 class TpSoapException extends TpException {
 
 }

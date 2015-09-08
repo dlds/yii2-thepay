@@ -1,6 +1,9 @@
 <?php
-require_once implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', 'exceptions', 'TpException.php'));
-require_once __DIR__.DIRECTORY_SEPARATOR."TpFerBuyCartItem.php";
+
+namespace dlds\thepay\api\ferbuy;
+
+use dlds\thepay\api\ferbuy\TpFerBuyCartItem;
+use dlds\thepay\api\exceptions\TpException;
 
 /**
  * Class TpFerBuyCart represents user cart.

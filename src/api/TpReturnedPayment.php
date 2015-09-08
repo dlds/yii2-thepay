@@ -1,7 +1,10 @@
 <?php
-require_once __DIR__.DIRECTORY_SEPARATOR."TpPayment.php";
-require_once implode(DIRECTORY_SEPARATOR, array(__DIR__, 'exceptions', "TpMissingParameterException.php"));
-require_once implode(DIRECTORY_SEPARATOR, array(__DIR__, 'exceptions', "TpInvalidSignatureException.php"));
+
+namespace dlds\thepay\api;
+
+use dlds\thepay\api\TpPayment;
+use dlds\thepay\api\exceptions\TpMissingParameterException;
+use dlds\thepay\api\exceptions\TpInvalidSignatureException;
 
 /**
  * Class to handle returned payment callback from ThePay gate.

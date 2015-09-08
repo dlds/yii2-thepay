@@ -1,217 +1,243 @@
 <?php
-require_once implode(DIRECTORY_SEPARATOR, array(__DIR__, "TpDataApiObject.php"));
+
+namespace dlds\thepay\api\dataApi;
+
+use dlds\thepay\api\dataApi\TpDataApiObject;
+
 class TpDataApiPaymentInfo extends TpDataApiObject {
-	
-	/**
-	 * @var boolean
-	 */
-	protected $isOffline;
 
-	/**
-	 * @var string
-	 */
-	protected $paymentPageUrl;
+    /**
+     * @var boolean
+     */
+    protected $isOffline;
 
-	/**
-	 * Only applicable for unpaid payments.
-	 * @var string
-	 */
-	protected $paymentInfoUrl;
+    /**
+     * @var string
+     */
+    protected $paymentPageUrl;
 
-	/**
-	 * Only applicable for unpaid payments.
-	 *
-	 * @var string
-	 */
-	protected $methodChangeUrl;
+    /**
+     * Only applicable for unpaid payments.
+     * @var string
+     */
+    protected $paymentInfoUrl;
 
-	/**
-	 * @var float
-	 */
-	protected $value;
+    /**
+     * Only applicable for unpaid payments.
+     *
+     * @var string
+     */
+    protected $methodChangeUrl;
 
-	/**
-	 * Only applicable for offline payments. 
-	 *
-	 * @var string
-	 */
-	protected $accountNumberPrefix;
+    /**
+     * @var float
+     */
+    protected $value;
 
-	/**
-	 * Only applicable for offline payments. 
-	 *
-	 * @var string
-	 */
-	protected $accountNumber;
+    /**
+     * Only applicable for offline payments. 
+     *
+     * @var string
+     */
+    protected $accountNumberPrefix;
 
-	/**
-	 * Only applicable for offline payments. 
-	 *
-	 * @var string
-	 */
-	protected $bankCode;
+    /**
+     * Only applicable for offline payments.
+     *
+     * @var string
+     */
+    protected $accountNumber;
 
-	/**
-	 * Only applicable for offline payments. 
-	 *
-	 * @var string
-	 */
-	protected $vs;
+    /**
+     * Only applicable for offline payments. 
+     *
+     * @var string
+     */
+    protected $bankCode;
 
-	/**
-	 * Only applicable for offline payments. 
-	 *
-	 * @var string
-	 */
-	protected $ss;
+    /**
+     * Only applicable for offline payments.
+     *
+     * @var string
+     */
+    protected $vs;
 
-	/**
-	 * Only applicable for offline payments. 
-	 *
-	 * @var string
-	 */
-	protected $ebankingUrl;
-	
-	/**
-	 * Only for SuperCash.
-	 * 
-	 * @var string
-	 */
-	protected $scCode;
-	
-	/**
-	 * Only for SuperCash.
-	 * 
-	 * @var string
-	 */
-	protected $scBarcodeUrl;
+    /**
+     * Only applicable for offline payments. 
+     *
+     * @var string
+     */
+    protected $ss;
 
-	public function __construct(stdClass $result) {
-		$this->isOffline = static::formatBool($result->isOffline, false);
-		$this->paymentPageUrl = static::formatString($result->paymentPageUrl, false);
-		$this->paymentInfoUrl = static::formatString($result->paymentInfoUrl, false);
+    /**
+     * Only applicable for offline payments.
+     *
+     * @var string
+     */
+    protected $ebankingUrl;
 
-		if(property_exists($result, 'methodChangeUrl')) {
-			$this->methodChangeUrl = static::formatString($result->methodChangeUrl, true);
-		}
+    /**
+     * Only for SuperCash.
+     * 
+     * @var string
+     */
+    protected $scCode;
 
-		$this->value = static::formatFloat($result->value, false);
+    /**
+     * Only for SuperCash.
+     *
+     * @var string
+     */
+    protected $scBarcodeUrl;
 
-		if(property_exists($result, 'accountNumberPrefix')) {
-			$this->accountNumberPrefix = static::formatString($result->accountNumberPrefix, false);
-		}
-		if(property_exists($result, 'accountNumber')) {
-			$this->accountNumber = static::formatString($result->accountNumber, false);
-		}
-		if(property_exists($result, 'bankCode')) {
-			$this->bankCode = static::formatString($result->bankCode, false);
-		}
-		if(property_exists($result, 'vs')) {
-			$this->vs = static::formatString($result->vs, false);
-		}
-		if(property_exists($result, 'ss')) {
-			$this->ss = static::formatString($result->ss, false);
-		}
-		if(property_exists($result, 'ebankingUrl')) {
-			$this->ebankingUrl = static::formatString($result->ebankingUrl, false);
-		}
-		if(property_exists($result, 'scCode')) {
-			$this->scCode = static::formatString($result->scCode, false);
-		}
-		if(property_exists($result, 'scBarcodeUrl')) {
-			$this->scBarcodeUrl = static::formatString($result->scBarcodeUrl, false);
-		}
-	}
+    public function __construct(\stdClass $result)
+    {
+        $this->isOffline = static::formatBool($result->isOffline, false);
+        $this->paymentPageUrl = static::formatString($result->paymentPageUrl, false);
+        $this->paymentInfoUrl = static::formatString($result->paymentInfoUrl, false);
 
-	/**
-	 * @return boolean
-	 */
-	public function getIsOffline() {
-		return $this->isOffline;
-	}
+        if (property_exists($result, 'methodChangeUrl'))
+        {
+            $this->methodChangeUrl = static::formatString($result->methodChangeUrl, true);
+        }
 
-	/**
-	 * @return string
-	 */
-	public function getPaymentPageUrl() {
-		return $this->paymentPageUrl;
-	}
+        $this->value = static::formatFloat($result->value, false);
 
-	/**
-	 * @return string
-	 */
-	function getPaymentInfoUrl() {
-		return $this->paymentInfoUrl;
-	}
+        if (property_exists($result, 'accountNumberPrefix'))
+        {
+            $this->accountNumberPrefix = static::formatString($result->accountNumberPrefix, false);
+        }
+        if (property_exists($result, 'accountNumber'))
+        {
+            $this->accountNumber = static::formatString($result->accountNumber, false);
+        }
+        if (property_exists($result, 'bankCode'))
+        {
+            $this->bankCode = static::formatString($result->bankCode, false);
+        }
+        if (property_exists($result, 'vs'))
+        {
+            $this->vs = static::formatString($result->vs, false);
+        }
+        if (property_exists($result, 'ss'))
+        {
+            $this->ss = static::formatString($result->ss, false);
+        }
+        if (property_exists($result, 'ebankingUrl'))
+        {
+            $this->ebankingUrl = static::formatString($result->ebankingUrl, false);
+        }
+        if (property_exists($result, 'scCode'))
+        {
+            $this->scCode = static::formatString($result->scCode, false);
+        }
+        if (property_exists($result, 'scBarcodeUrl'))
+        {
+            $this->scBarcodeUrl = static::formatString($result->scBarcodeUrl, false);
+        }
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getMethodChangeUrl() {
-		return $this->methodChangeUrl;
-	}
+    /**
+     * @return boolean
+     */
+    public function getIsOffline()
+    {
+        return $this->isOffline;
+    }
 
-	/**
-	 * @return float
-	 */
-	public function getValue() {
-		return $this->value;
-	}
+    /**
+     * @return string
+     */
+    public function getPaymentPageUrl()
+    {
+        return $this->paymentPageUrl;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getAccountNumberPrefix() {
-		return $this->accountNumberPrefix;
-	}
+    /**
+     * @return string
+     */
+    function getPaymentInfoUrl()
+    {
+        return $this->paymentInfoUrl;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getAccountNumber() {
-		return $this->accountNumber;
-	}
+    /**
+     * @return string
+     */
+    public function getMethodChangeUrl()
+    {
+        return $this->methodChangeUrl;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getBankCode() {
-		return $this->bankCode;
-	}
+    /**
+     * @return float
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getVs() {
-		return $this->vs;
-	}
+    /**
+     * @return string
+     */
+    public function getAccountNumberPrefix()
+    {
+        return $this->accountNumberPrefix;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getSs() {
-		return $this->ss;
-	}
+    /**
+     * @return string
+     */
+    public function getAccountNumber()
+    {
+        return $this->accountNumber;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getEbankingUrl() {
-		return $this->ebankingUrl;
-	}
+    /**
+     * @return string
+     */
+    public function getBankCode()
+    {
+        return $this->bankCode;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getScCode() {
-		return $this->scCode;
-	}
+    /**
+     * @return string
+     */
+    public function getVs()
+    {
+        return $this->vs;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getScBarcodeUrl() {
-		return $this->scBarcodeUrl;
-	}
+    /**
+     * @return string
+     */
+    public function getSs()
+    {
+        return $this->ss;
+    }
 
+    /**
+     * @return string
+     */
+    public function getEbankingUrl()
+    {
+        return $this->ebankingUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScCode()
+    {
+        return $this->scCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScBarcodeUrl()
+    {
+        return $this->scBarcodeUrl;
+    }
 }
