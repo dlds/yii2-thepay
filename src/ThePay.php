@@ -114,11 +114,11 @@ class ThePay extends \yii\base\Component {
 
     /**
      * Retrieves payment status
-     * @param interfaces\ThePayPaymentInterface $payment
+     * @param int $pid thepay payment identification
      */
-    public function getPaymentStatus(interfaces\ThePayPaymentInterface $payment)
+    public function getPaymentStatus($pid)
     {
-        return $this->getApiHandler()->getPaymentStatus($payment);
+        return $this->getApiHandler()->getPaymentStatus($pid);
     }
 
     /**

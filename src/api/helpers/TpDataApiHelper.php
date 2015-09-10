@@ -66,7 +66,7 @@ class TpDataApiHelper {
             $signedRequest = new TpDataApiSignedArray($request, $config->dataApiPassword);
             $result = $client->$operation($signedRequest->signed());
         }
-        catch (SoapFault $e)
+        catch (\SoapFault $e)
         {
             throw new TpSoapException($e->getMessage());
         }

@@ -96,13 +96,21 @@ class ThePayApiHandler {
     /**
      * Retrieves payment status
      */
-    public function getPaymentStatus(ThePayPaymentInterface $payment)
+    public function getPaymentStatus($pid)
     {
-        $res = TpDataApiHelper::getPaymentState($this->apiConfig, 115232);
-
-        if ($res instanceof \dlds\thepay\api\dataApi\TpDataApiGetPaymentStateResponse)
+        try
         {
-            return $res->getState();
+            $res = TpDataApiHelper::getPaymentState($this->apiConfig, (int) $pid);
+
+            if ($res instanceof \dlds\thepay\api\dataApi\TpDataApiGetPaymentStateResponse)
+            {
+                return $res->getState();
+            }
+        }
+        catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
+        {
+            //throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
+            \Yii::error($exc->getTraceAsString());
         }
 
         return false;
