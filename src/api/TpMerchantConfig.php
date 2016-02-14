@@ -89,4 +89,12 @@ class TpMerchantConfig {
         $this->webServicesWsdl = self::URL_WSDL_DEV;
         $this->dataWebServicesWsdl = self::URL_WSDL_DATA_DEV;
     }
+
+    public function setCredentials($merchantId, $accountId, $password, $dataApiPassword)
+    {
+        $this->merchantId = $merchantId;
+        $this->accountId = $accountId;
+        $this->password = $password;
+        $this->dataApiPassword = $dataApiPassword;
+    }
 }

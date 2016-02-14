@@ -1,5 +1,7 @@
 <?php
 
+namespace dlds\thepay\api;
+
 class TpPermanentPaymentResponseMethod {
 
     protected $methodId;

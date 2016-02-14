@@ -28,7 +28,6 @@ class ThePay extends \yii\base\Component {
     const PAYMENT_STATUS_AWAITING = 7;
     const PAYMENT_STATUS_STORNO = 8;
     const PAYMENT_STATUS_BLOCKED = 9;
-    const PAYMENT_STATUS_UNKNOWN = 888;
 
     /**
      * Payment types
@@ -113,12 +112,39 @@ class ThePay extends \yii\base\Component {
     }
 
     /**
+     * Retrieves payments
+     * @param array $params search params
+     */
+    public function getPayments(array $params = [])
+    {
+        return $this->getApiHandler()->getPayments($params);
+    }
+
+    /**
+     * Retrieves payment
+     * @param array $params search params
+     */
+    public function getPayment($pid)
+    {
+        return $this->getApiHandler()->getPayment($pid);
+    }
+
+    /**
      * Retrieves payment status
      * @param int $pid thepay payment identification
      */
     public function getPaymentStatus($pid)
     {
         return $this->getApiHandler()->getPaymentStatus($pid);
+    }
+
+       /**
+     * Retrieves payment
+     * @param array $params search params
+     */
+    public function getPaymentInstructions($pid)
+    {
+        return $this->getApiHandler()->getPaymentInstructions($pid);
     }
 
     /**
@@ -154,7 +180,6 @@ class ThePay extends \yii\base\Component {
             self::PAYMENT_STATUS_AWAITING => \Yii::t('thepay', 'text_payment_status_awaiting'),
             self::PAYMENT_STATUS_STORNO => \Yii::t('thepay', 'text_payment_status_storno'),
             self::PAYMENT_STATUS_BLOCKED => \Yii::t('thepay', 'text_payment_status_blocked'),
-            self::PAYMENT_STATUS_UNKNOWN => \Yii::t('thepay', 'text_payment_status_unknown'),
         ];
     }
 

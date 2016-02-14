@@ -9,7 +9,7 @@ class TpException extends \Exception {
 
     public $defaultMessage = "Generic ThePay exception";
 
-    function __construct($message = NULL)
+    public function __construct($message = NULL)
     {
         if (is_null($message))
         {

@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__.DIRECTORY_SEPARATOR."TpMerchantHelper.php";
-require_once implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', "TpEscaper.php"));
+
+namespace dlds\thepay\api\helpers;
 
 /**
  * Button helper, that generates simple text button that points to the
@@ -29,7 +29,7 @@ class TpButtonMerchantHelper extends TpMerchantHelper {
      * @param buttonText Optional argument specifying the text that should
      *   be displayed on the button.
      */
-    function setButtonStyle($buttonStyle, $buttonText = NULL)
+    public function setButtonStyle($buttonStyle, $buttonText = NULL)
     {
         $this->buttonStyle = $buttonStyle;
         if (!is_null($buttonText))
@@ -41,7 +41,7 @@ class TpButtonMerchantHelper extends TpMerchantHelper {
     /**
      * Sets the buttonText property.
      */
-    function setButtonText($buttonText)
+    public function setButtonText($buttonText)
     {
         $this->buttonText = $buttonText;
     }
@@ -49,7 +49,7 @@ class TpButtonMerchantHelper extends TpMerchantHelper {
     /**
      * Returns the buttonStyle property.
      */
-    function getButtonStyle()
+    public function getButtonStyle()
     {
         return $this->buttonStyle;
     }
@@ -57,7 +57,7 @@ class TpButtonMerchantHelper extends TpMerchantHelper {
     /**
      * Returns the buttonText property.
      */
-    function getButtonText()
+    public function getButtonText()
     {
         return $this->buttonText;
     }
@@ -65,11 +65,11 @@ class TpButtonMerchantHelper extends TpMerchantHelper {
     /**
      * Return the HTML code for the button.
      */
-    function render()
+    public function render()
     {
         $gateUrl = $this->payment->getMerchantConfig()->gateUrl;
 
-        $targetUrl = TpEscaper::htmlEntityEncode("{$gateUrl}iframe/");
+        $targetUrl = \dlds\thepay\api\TpEscaper::htmlEntityEncode("{$gateUrl}iframe/");
         $targetUrl = "$targetUrl?".$this->buildQuery();
 
         switch ($this->buttonStyle)
@@ -81,9 +81,9 @@ class TpButtonMerchantHelper extends TpMerchantHelper {
             default:
                 $buttonStyle = rawurlencode($this->buttonStyle);
                 $src = "{$gateUrl}buttons/$buttonStyle.png";
-                $src = TpEscaper::htmlEntityEncode($src);
+                $src = \dlds\thepay\api\TpEscaper::htmlEntityEncode($src);
 
-                $title = TpEscaper::htmlEntityEncode($this->buttonText);
+                $title = \dlds\thepay\api\TpEscaper::htmlEntityEncode($this->buttonText);
                 return "<a href=\"".$targetUrl."\"><img src=\"$src\" alt=\"$title\" title=\"$title\" /></a>";
                 break;
         }

@@ -2,8 +2,6 @@
 
 namespace dlds\thepay\api\ferbuy;
 
-use dlds\thepay\api\exceptions\TpInvalidArgumentException;
-
 class TpFerBuyCustomer {
 
     /**
@@ -50,44 +48,44 @@ class TpFerBuyCustomer {
      * @param string $address Customer address.
      * @param string $postalCode Customer postal code.
      * @param string $mobilePhone Customer mobile phone number (Optional).
-     * @throws InvalidArgumentException If one of parameters is empty or null.
+     * @throws TpInvalidArgumentException If one of parameters is empty or null.
      */
     public function __construct($firstName, $lastName, $email, $city, $address, $postalCode, $mobilePhone = null)
     {
         $firstName = strval($firstName);
         if ($firstName === "")
         {
-            throw new TpInvalidArgumentException("First name cannot be empty.");
+            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException("First name cannot be empty.");
         }
 
         $lastName = strval($lastName);
         if ($lastName === "")
         {
-            throw new TpInvalidArgumentException("Last name cannot be empty.");
+            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException("Last name cannot be empty.");
         }
 
         $email = strval($email);
         if ($email === "")
         {
-            throw new TpInvalidArgumentException("Email cannot be empty.");
+            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException("Email cannot be empty.");
         }
 
         $city = strval($city);
         if ($city === "")
         {
-            throw new TpInvalidArgumentException("City cannot be empty.");
+            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException("City cannot be empty.");
         }
 
         $address = strval($address);
         if ($address == "")
         {
-            throw new TpInvalidArgumentException("Address cannot be empty.");
+            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException("Address cannot be empty.");
         }
 
         $postalCode = strval($postalCode);
         if ($postalCode === "")
         {
-            throw new TpInvalidArgumentException("Postal code cannot be empty.");
+            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException("Postal code cannot be empty.");
         }
 
         $this->firstName = $firstName;

@@ -2,12 +2,6 @@
 
 namespace dlds\thepay\api;
 
-use yii\helpers\Url;
-use dlds\thepay\api\ferbuy\TpFerBuyOrder;
-use dlds\thepay\api\exceptions\TpInvalidParameterException;
-use dlds\thepay\api\TpMerchantConfig;
-use dlds\thepay\api\TpEscaper;
-
 /**
  * Class representing one payment instance.
  */
@@ -91,9 +85,9 @@ class TpPayment {
     {
         $this->config = $config;
 
-        if (is_null($this->returnUrl))
+        if (is_null($this->returnUrl) && isset($_SERVER["HTTP_HOST"]) && isset($_SERVER["REQUEST_URI"]))
         {
-            $this->returnUrl = Url::to(\Yii::$app->homeUrl);
+            $this->returnUrl = ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"]) ? "https" : "http")."://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
         }
     }
 
@@ -107,16 +101,11 @@ class TpPayment {
         // Only positive numbers allowed.
         if (!is_numeric($value) || (double) $value < 0)
         {
-            throw new TpInvalidParameterException('value');
+            throw new exceptions\TpInvalidParameterException("value");
         }
         else
         {
             $this->value = (double) $value;
-        }
-
-        if (!YII_ENV_PROD && $this->value >= 100)
-        {
-            $this->value /= 100;
         }
     }
 
@@ -264,7 +253,7 @@ class TpPayment {
         }
 
         $obj = TpEscaper::jsonDecode($this->customerData);
-        if (!$obj instanceof \stdClass)
+        if (!$obj instanceof stdClass)
         {
             return null;
         }
@@ -348,66 +337,66 @@ class TpPayment {
      */
     public function getArgs()
     {
-        $input = [
-            'merchantId' => $this->config->merchantId,
-            'accountId' => $this->config->accountId
-        ];
+        $input = array();
+
+        $input["merchantId"] = $this->config->merchantId;
+        $input["accountId"] = $this->config->accountId;
 
         if (!is_null($this->value))
         {
-            $input['value'] = $this->value;
+            $input["value"] = $this->value;
         }
 
         if (!is_null($this->currency))
         {
-            $input['currency'] = $this->currency;
+            $input["currency"] = $this->currency;
         }
 
         if (!is_null($this->description))
         {
-            $input['description'] = $this->description;
+            $input["description"] = $this->description;
         }
 
         if (!is_null($this->merchantData))
         {
-            $input['merchantData'] = $this->merchantData;
+            $input["merchantData"] = $this->merchantData;
         }
 
         if (!is_null($this->customerData))
         {
-            if ($this->customerData instanceof TpFerBuyOrder)
+            if ($this->customerData instanceof ferbuy\TpFerBuyOrder)
             {
-                $input['customerData'] = $this->customerData->toJSON();
+                $input["customerData"] = $this->customerData->toJSON();
             }
         }
 
         if (!is_null($this->customerEmail))
         {
-            $input['customerEmail'] = $this->customerEmail;
+            $input["customerEmail"] = $this->customerEmail;
         }
 
         if (!is_null($this->returnUrl))
         {
-            $input['returnUrl'] = $this->returnUrl;
+            $input["returnUrl"] = $this->returnUrl;
         }
 
         if (!is_null($this->methodId))
         {
-            $input['methodId'] = $this->methodId;
+            $input["methodId"] = $this->methodId;
         }
 
         if (!is_null($this->deposit))
         {
-            $input['deposit'] = $this->deposit;
+            $input["deposit"] = $this->deposit;
         }
         if (!is_null($this->isRecurring))
         {
-            $input['isRecurring'] = $this->isRecurring;
+            $input["isRecurring"] = $this->isRecurring;
         }
 
         if (!is_null($this->merchantSpecificSymbol))
         {
-            $input['merchantSpecificSymbol'] = $this->merchantSpecificSymbol;
+            $input["merchantSpecificSymbol"] = $this->merchantSpecificSymbol;
         }
 
         return $input;
@@ -424,15 +413,13 @@ class TpPayment {
     {
         $input = $this->getArgs();
 
-        $str = '';
-
+        $str = "";
         foreach ($input as $key => $val)
         {
-            $str .= $key.'='.$val.'&';
+            $str .= $key."=".$val."&";
         }
 
-        $str .= 'password='.$this->config->password;
-
+        $str .= "password=".$this->config->password;
         return $this->hashFunction($str);
     }
 

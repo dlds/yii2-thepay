@@ -1,14 +1,19 @@
 <?php
 
+namespace dlds\thepay\api;
+
 class TpCardPaymentResponse {
 
     protected $status;
     protected $errorDescription;
 
-    function __construct(array $data)
+    function __construct(\stdClass $data)
     {
-        $this->status = $data['status'];
-        $this->errorDescription = $data['errorDescription'];
+        $this->status = $data->status;
+        if (property_exists($data, 'errorDescription'))
+        {
+            $this->errorDescription = $data->errorDescription;
+        }
     }
 
     public function getStatus()

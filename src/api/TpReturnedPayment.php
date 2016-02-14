@@ -2,22 +2,18 @@
 
 namespace dlds\thepay\api;
 
-use dlds\thepay\api\TpPayment;
-use dlds\thepay\api\exceptions\TpMissingParameterException;
-use dlds\thepay\api\exceptions\TpInvalidSignatureException;
-
 /**
  * Class to handle returned payment callback from ThePay gate.
  */
 class TpReturnedPayment extends TpPayment {
 
     /**
-     * @var iteger merchantId from request
+     * @var integer merchantId from request
      */
     protected $requestMerchantId = null;
 
     /**
-     * @var iteger accountId from request
+     * @var integer accountId from request
      */
     protected $requestAccountId = null;
 
@@ -176,7 +172,7 @@ class TpReturnedPayment extends TpPayment {
         {
             if (!isset($args[$arg]))
             {
-                throw new TpMissingParameterException($arg);
+                throw new exceptions\TpMissingParameterException($arg);
             }
             $this->$arg = $args[$arg];
         }
@@ -205,6 +201,12 @@ class TpReturnedPayment extends TpPayment {
      */
     function verifySignature($signature = NULL)
     {
+        // check merchantId and accountId from request
+        if ($this->requestMerchantId != $this->config->merchantId || $this->requestAccountId != $this->config->accountId)
+        {
+            throw new exceptions\TpInvalidSignatureException();
+        }
+
         if ($signature === null)
         {
             $signature = $this->signature;
@@ -231,7 +233,7 @@ class TpReturnedPayment extends TpPayment {
         }
         else
         {
-            throw new TpInvalidSignatureException();
+            throw new exceptions\TpInvalidSignatureException();
         }
     }
 

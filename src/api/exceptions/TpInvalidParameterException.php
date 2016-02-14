@@ -2,8 +2,6 @@
 
 namespace dlds\thepay\api\exceptions;
 
-use dlds\thepay\api\exceptions\TpException;
-
 /**
  * Exception thrown when invalid parameter value has been received.
  */

@@ -45,10 +45,7 @@ class ThePayApiHandler {
         }
         else
         {
-            $this->apiConfig->merchantId = $merchantId;
-            $this->apiConfig->accountId = $accountId;
-            $this->apiConfig->password = $password;
-            $this->apiConfig->dataApiPassword = $dataApiPassword;
+            $this->apiConfig->setCredentials($merchantId, $accountId, $password, $dataApiPassword);
         }
     }
 
@@ -94,6 +91,89 @@ class ThePayApiHandler {
     }
 
     /**
+     * Retrieves payments
+     */
+    public function getPayments(array $params = [])
+    {
+        try
+        {
+            $searchParams = new \dlds\thepay\api\dataApi\parameters\TpDataApiGetPaymentsSearchParams($params);
+
+            $res = TpDataApiHelper::getPayments($this->apiConfig, $searchParams);
+
+            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentsResponse)
+            {
+                return $res;
+            }
+        }
+        catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
+        {
+            if (YII_DEBUG)
+            {
+                throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
+            }
+
+            \Yii::error($exc->getTraceAsString());
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieves single payment
+     */
+    public function getPayment($pid)
+    {
+        try
+        {
+            $res = TpDataApiHelper::getPayment($this->apiConfig, $pid);
+
+            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentResponse)
+            {
+                return $res;
+            }
+        }
+        catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
+        {
+            if (YII_DEBUG)
+            {
+                throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
+            }
+
+            \Yii::error($exc->getTraceAsString());
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieves single payment
+     */
+    public function getPaymentInstructions($pid)
+    {
+        try
+        {
+            $res = TpDataApiHelper::getPaymentInstructions($this->apiConfig, $pid);
+
+            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentInstructionsResponse)
+            {
+                return $res;
+            }
+        }
+        catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
+        {
+            if (YII_DEBUG)
+            {
+                throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
+            }
+
+            \Yii::error($exc->getTraceAsString());
+        }
+
+        return false;
+    }
+
+    /**
      * Retrieves payment status
      */
     public function getPaymentStatus($pid)
@@ -102,14 +182,18 @@ class ThePayApiHandler {
         {
             $res = TpDataApiHelper::getPaymentState($this->apiConfig, (int) $pid);
 
-            if ($res instanceof \dlds\thepay\api\dataApi\TpDataApiGetPaymentStateResponse)
+            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentStateResponse)
             {
                 return $res->getState();
             }
         }
         catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
         {
-            //throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
+            if (YII_DEBUG)
+            {
+                throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
+            }
+
             \Yii::error($exc->getTraceAsString());
         }
 

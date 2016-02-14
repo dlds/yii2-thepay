@@ -22,6 +22,12 @@ interface ThePayPaymentInterface {
     public function getSessionId();
 
     /**
+     * Retrieves remote payment id
+     * @return string remoteid
+     */
+    public function getRemoteId();
+
+    /**
      * Retrieves source model this order was created based on
      * @return ThePayPaymentSourceInterface
      */

@@ -2,8 +2,6 @@
 
 namespace dlds\thepay\api\ferbuy;
 
-use dlds\thepay\api\TpEscaper;
-
 /**
  * Class TpFerBuyCartItem represents one item in users cart.
  */
@@ -33,13 +31,14 @@ class TpFerBuyCartItem {
      * @param string $name
      * @param int|float $price
      * @param int $quantity
+     * @throws TpInvalidArgumentException
      */
     public function __construct($name, $price, $quantity = 1)
     {
         $intQuantity = intval($quantity);
         if ($intQuantity != $quantity)
         {
-            throw new TpInvalidArgumentException("Quantity has to be integer");
+            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException("Quantity has to be integer");
         }
         $this->quantity = $intQuantity;
 
@@ -86,15 +85,15 @@ class TpFerBuyCartItem {
     /**
      * Set product price.
      * @param int|float $price
-     * @throws InvalidArgumentException If price parameter is not numeric.
+     * @throws TpInvalidArgumentException If price parameter is not numeric.
      */
     protected function setPrice($price)
     {
         if (!is_numeric($price))
         {
-            throw new InvalidArgumentException('Price has to be numeric');
+            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException('Price has to be numeric');
         }
-        $price = round($price, 2); // Výsledek je vždy desetinný, i když nemá desetinná místa.
+        $price = round($price, 2);
         $this->price = intval($price * 100);
     }
 
@@ -123,7 +122,7 @@ class TpFerBuyCartItem {
      */
     public function toJSON()
     {
-        return TpEscaper::jsonEncode(array(
+        return \dlds\thepay\api\TpEscaper::jsonEncode(array(
                 'name' => $this->name,
                 'description' => $this->description,
                 'quantity' => $this->quantity,

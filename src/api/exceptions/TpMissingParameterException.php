@@ -2,8 +2,6 @@
 
 namespace dlds\thepay\api\exceptions;
 
-use dlds\thepay\api\exceptions\TpInvalidParameterException;
-
 class TpMissingParameterException extends TpInvalidParameterException {
 
     function __construct($parameter)

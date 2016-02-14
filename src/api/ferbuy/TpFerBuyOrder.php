@@ -2,10 +2,6 @@
 
 namespace dlds\thepay\api\ferbuy;
 
-use dlds\thepay\api\ferbuy\TpFerBuyCart;
-use dlds\thepay\api\ferbuy\TpFerBuyCustomer;
-use dlds\thepay\api\TpEscaper;
-
 /**
  * Class TpFerBuyOrder represents order.
  */
@@ -48,21 +44,21 @@ class TpFerBuyOrder {
     public function toJSON()
     {
         $result = '{';
-        $result .= '"first_name": '.TpEscaper::jsonEncode($this->customer->getFirstName()).', ';
-        $result .= '"last_name": '.TpEscaper::jsonEncode($this->customer->getLastName()).', ';
-        $result .= '"currency": '.TpEscaper::jsonEncode($this->cart->getCurrency()).', ';
-        $result .= '"amount": '.TpEscaper::jsonEncode($this->cart->getTotalAmountWithoutDecimal()).', ';
+        $result .= '"first_name": '.\dlds\thepay\api\TpEscaper::jsonEncode($this->customer->getFirstName()).', ';
+        $result .= '"last_name": '.\dlds\thepay\api\TpEscaper::jsonEncode($this->customer->getLastName()).', ';
+        $result .= '"currency": '.\dlds\thepay\api\TpEscaper::jsonEncode($this->cart->getCurrency()).', ';
+        $result .= '"amount": '.\dlds\thepay\api\TpEscaper::jsonEncode($this->cart->getTotalAmountWithoutDecimal()).', ';
 
         $mobilePhone = $this->customer->getMobilePhone();
         if (!is_null($mobilePhone) && $mobilePhone != "")
         {
-            $result .= '"mobile_phone": '.TpEscaper::jsonEncode($mobilePhone).', ';
+            $result .= '"mobile_phone": '.\dlds\thepay\api\TpEscaper::jsonEncode($mobilePhone).', ';
         }
 
-        $result .= '"city": '.TpEscaper::jsonEncode($this->customer->getCity()).', ';
-        $result .= '"postal_code": '.TpEscaper::jsonEncode($this->customer->getPostalCode()).', ';
-        $result .= '"address": '.TpEscaper::jsonEncode($this->customer->getAddress()).', ';
-        $result .= '"email": '.TpEscaper::jsonEncode($this->customer->getEmail()).',';
+        $result .= '"city": '.\dlds\thepay\api\TpEscaper::jsonEncode($this->customer->getCity()).', ';
+        $result .= '"postal_code": '.\dlds\thepay\api\TpEscaper::jsonEncode($this->customer->getPostalCode()).', ';
+        $result .= '"address": '.\dlds\thepay\api\TpEscaper::jsonEncode($this->customer->getAddress()).', ';
+        $result .= '"email": '.\dlds\thepay\api\TpEscaper::jsonEncode($this->customer->getEmail()).',';
         $result .= '"shopping_cart": '.$this->cart->toJSON().'}';
         return $result;
     }
