@@ -66,4 +66,10 @@ interface ThePayPaymentSourceInterface {
      * @return string random string
      */
     public function getSourceTs();
+    
+    /**
+     * Retrieves source payment type
+     * @return string random string
+     */
+    public function getSourcePaymentType();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.digitaldeals.cz/
  * @copyright Copyright (c) 2014 Digital Deals s.r.o.
@@ -15,7 +16,8 @@ namespace dlds\thepay;
  * @package thepay
  * @see https://www.thepay.cz/ke-stazeni/
  */
-class ThePay extends \yii\base\Component {
+class ThePay extends \yii\base\Component
+{
 
     /**
      * Payment statuses
@@ -82,23 +84,19 @@ class ThePay extends \yii\base\Component {
      */
     public function init()
     {
-        if (!$this->merchantId)
-        {
+        if (!$this->merchantId) {
             throw new \yii\base\Exception('Parameter "merchantId" is not set');
         }
 
-        if (!$this->accountId)
-        {
+        if (!$this->accountId) {
             throw new \yii\base\Exception('Parameter "accountId" is not set');
         }
 
-        if (!$this->password)
-        {
+        if (!$this->password) {
             throw new \yii\base\Exception('Parameter "password" is not set');
         }
 
-        if (!$this->dataApiPassword)
-        {
+        if (!$this->dataApiPassword) {
             throw new \yii\base\Exception('Parameter "dataApiPassword" is not set');
         }
     }
@@ -109,6 +107,15 @@ class ThePay extends \yii\base\Component {
     public function createPayment(interfaces\ThePayPaymentSourceInterface $source, interfaces\ThePayPaymentInterface $template)
     {
         return handlers\ThePayPaymentHandler::createFromSource($source, $template);
+    }
+
+    /**
+     * Retrieves PayU gateway url
+     * @return string url
+     */
+    public function getUrl(interfaces\ThePayPaymentSourceInterface $payment, $returnUrl = false)
+    {
+        return $this->getApiHandler()->getUrl($payment, $returnUrl);
     }
 
     /**
@@ -138,7 +145,7 @@ class ThePay extends \yii\base\Component {
         return $this->getApiHandler()->getPaymentStatus($pid);
     }
 
-       /**
+    /**
      * Retrieves payment
      * @param array $params search params
      */
@@ -163,6 +170,15 @@ class ThePay extends \yii\base\Component {
     protected function getApiHandler()
     {
         return handlers\ThePayApiHandler::instance($this->merchantId, $this->accountId, $this->password, $this->dataApiPassword, $this->demo);
+    }
+
+    /**
+     * Indicates if given payment is done
+     * @param \dlds\thepay\api\dataApi\parameters\TpDataApiPayment $payment
+     */
+    public static function isPaymentDone(api\dataApi\parameters\TpDataApiPayment $payment)
+    {
+        return $payment->state == self::PAYMENT_STATUS_DONE;
     }
 
     /**
@@ -207,19 +223,15 @@ class ThePay extends \yii\base\Component {
             self::PAYMENT_TYPE_BANKWIRE => \Yii::t('thepay', 'text_payment_method_bankwire'),
         ];
 
-        if (isset($types[$group]))
-        {
+        if (isset($types[$group])) {
             return $types[$group];
         }
 
-        if (!$allowGroups)
-        {
+        if (!$allowGroups) {
             $merged = [];
 
-            foreach ($types as $payments)
-            {
-                foreach ($payments as $key => $label)
-                {
+            foreach ($types as $payments) {
+                foreach ($payments as $key => $label) {
                     $merged[$key] = $label;
                 }
             }
@@ -229,4 +241,5 @@ class ThePay extends \yii\base\Component {
 
         return $types;
     }
+
 }

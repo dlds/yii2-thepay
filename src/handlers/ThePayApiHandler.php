@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.digitaldeals.cz/
  * @copyright Copyright (c) 2014 Digital Deals s.r.o.
@@ -9,6 +10,7 @@ namespace dlds\thepay\handlers;
 
 use dlds\thepay\handlers\ThePayGatewayHandler;
 use dlds\thepay\interfaces\ThePayPaymentInterface;
+use dlds\thepay\interfaces\ThePayPaymentSourceInterface;
 use dlds\thepay\api\TpPayment;
 use dlds\thepay\api\helpers\TpDataApiHelper;
 
@@ -18,7 +20,8 @@ use dlds\thepay\api\helpers\TpDataApiHelper;
  * @author Jiri Svoboda <jiri.svobodao@dlds.cz>
  * @package mlm
  */
-class ThePayApiHandler {
+class ThePayApiHandler
+{
 
     /**
      * @var \dlds\thepay\api\TpMerchantConfig
@@ -39,12 +42,9 @@ class ThePayApiHandler {
     {
         $this->apiConfig = new \dlds\thepay\api\TpMerchantConfig();
 
-        if ($demo)
-        {
+        if ($demo) {
             $this->apiConfig->setDemoCredentials();
-        }
-        else
-        {
+        } else {
             $this->apiConfig->setCredentials($merchantId, $accountId, $password, $dataApiPassword);
         }
     }
@@ -60,14 +60,32 @@ class ThePayApiHandler {
      */
     public static function instance($merchantId, $accountId, $password, $dataApiPassword, $demo)
     {
-        $hash = md5($merchantId.$accountId.$password.$dataApiPassword.$demo);
+        $hash = md5($merchantId . $accountId . $password . $dataApiPassword . $demo);
 
-        if (!self::$_instance[$hash])
-        {
+        if (!self::$_instance[$hash]) {
             self::$_instance[$hash] = new self($merchantId, $accountId, $password, $dataApiPassword, $demo);
         }
 
         return self::$_instance[$hash];
+    }
+
+    /**
+     * Retrieves payment url
+     */
+    public function getUrl(ThePayPaymentSourceInterface $source, $returnUrl = false)
+    {
+        $tpp = new TpPayment($this->apiConfig);
+        $tpp->setValue($source->getSourceAmount());
+        $tpp->setDescription($source->getSourceDesc());
+        $tpp->setMerchantData($source->getSourceId());
+        $tpp->setMethodId($source->getSourcePaymentType());
+        $tpp->setCustomerEmail($source->getSourceCustomerEmail());
+
+        if ($returnUrl) {
+            $tpp->setReturnUrl($returnUrl);
+        }
+
+        return ThePayGatewayHandler::getUrl($this->apiConfig, ThePayGatewayHandler::buildPaymentQuery($tpp));
     }
 
     /**
@@ -82,8 +100,7 @@ class ThePayApiHandler {
         $tpp->setMethodId($payment->getPaymentType());
         $tpp->setCustomerEmail($payment->getSource()->getSourceCustomerEmail());
 
-        if ($returnUrl)
-        {
+        if ($returnUrl) {
             $tpp->setReturnUrl($returnUrl);
         }
 
@@ -95,21 +112,16 @@ class ThePayApiHandler {
      */
     public function getPayments(array $params = [])
     {
-        try
-        {
+        try {
             $searchParams = new \dlds\thepay\api\dataApi\parameters\TpDataApiGetPaymentsSearchParams($params);
 
             $res = TpDataApiHelper::getPayments($this->apiConfig, $searchParams);
 
-            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentsResponse)
-            {
+            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentsResponse) {
                 return $res;
             }
-        }
-        catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
-        {
-            if (YII_DEBUG)
-            {
+        } catch (\dlds\thepay\api\exceptions\TpSoapException $exc) {
+            if (YII_DEBUG) {
                 throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
             }
 
@@ -124,19 +136,14 @@ class ThePayApiHandler {
      */
     public function getPayment($pid)
     {
-        try
-        {
+        try {
             $res = TpDataApiHelper::getPayment($this->apiConfig, $pid);
 
-            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentResponse)
-            {
+            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentResponse) {
                 return $res;
             }
-        }
-        catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
-        {
-            if (YII_DEBUG)
-            {
+        } catch (\dlds\thepay\api\exceptions\TpSoapException $exc) {
+            if (YII_DEBUG) {
                 throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
             }
 
@@ -151,19 +158,14 @@ class ThePayApiHandler {
      */
     public function getPaymentInstructions($pid)
     {
-        try
-        {
+        try {
             $res = TpDataApiHelper::getPaymentInstructions($this->apiConfig, $pid);
 
-            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentInstructionsResponse)
-            {
+            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentInstructionsResponse) {
                 return $res;
             }
-        }
-        catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
-        {
-            if (YII_DEBUG)
-            {
+        } catch (\dlds\thepay\api\exceptions\TpSoapException $exc) {
+            if (YII_DEBUG) {
                 throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
             }
 
@@ -178,19 +180,14 @@ class ThePayApiHandler {
      */
     public function getPaymentStatus($pid)
     {
-        try
-        {
+        try {
             $res = TpDataApiHelper::getPaymentState($this->apiConfig, (int) $pid);
 
-            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentStateResponse)
-            {
+            if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentStateResponse) {
                 return $res->getState();
             }
-        }
-        catch (\dlds\thepay\api\exceptions\TpSoapException $exc)
-        {
-            if (YII_DEBUG)
-            {
+        } catch (\dlds\thepay\api\exceptions\TpSoapException $exc) {
+            if (YII_DEBUG) {
                 throw new \dlds\thepay\api\exceptions\TpSoapException($exc->getMessage());
             }
 
@@ -199,4 +196,5 @@ class ThePayApiHandler {
 
         return false;
     }
+
 }
