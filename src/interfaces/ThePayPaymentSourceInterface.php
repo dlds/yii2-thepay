@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.digitaldeals.cz/
  * @copyright Copyright (c) 2014 Digital Deals s.r.o.
@@ -11,7 +12,8 @@ namespace dlds\thepay\interfaces;
  * Interface which should be ingerited by any model which would be used as
  * source model for creating PayU order
  */
-interface ThePayPaymentSourceInterface {
+interface ThePayPaymentSourceInterface
+{
 
     /**
      * Retrieves source id
@@ -66,10 +68,44 @@ interface ThePayPaymentSourceInterface {
      * @return string random string
      */
     public function getSourceTs();
-    
+
     /**
      * Retrieves source payment type
      * @return string random string
      */
     public function getSourcePaymentType();
+
+    /**
+     * Retrieves payment instructions assigned to source
+     * @return \dlds\thepay\api\dataApi\TpDataApiGetPaymentInstructionsResponse
+     */
+    public function getPaymentInstructions();
+
+    /**
+     * Retrieves payment page url
+     * @return string
+     */
+    public function getPaymentPageUrl();
+
+    /**
+     * Retrieves payment info url
+     * @return string
+     */
+    public function getPaymentInfoUrl();
+
+    /**
+     * Retrieves payment method change url
+     * @return string
+     */
+    public function getPaymentChangeUrl();
+
+    /**
+     * Sets remote payment id
+     */
+    public function setPaymentId($id);
+
+    /**
+     * Sets remote payment method
+     */
+    public function setPaymentMethod($method);
 }
