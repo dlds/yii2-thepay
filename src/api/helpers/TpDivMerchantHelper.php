@@ -1,15 +1,17 @@
 <?php
 
 namespace dlds\thepay\api\helpers;
+use dlds\thepay\api\TpEscaper;
 
 /**
  * Helper that generates payment button in div.
  */
-class TpDivMerchantHelper extends TpMerchantHelper {
+class TpDivMerchantHelper extends TpMerchantHelper
+{
 
     /**
      * Optional CSS argument, that can contain URL to custom stylesheet,
-     * that allows to customize the layout of the iframe content.
+     * that allows to customize the layout of the div content.
      */
     protected $cssUrl;
 
@@ -81,7 +83,7 @@ class TpDivMerchantHelper extends TpMerchantHelper {
     }
 
     /**
-     * Return the HTML code for the iframe.
+     * Return the HTML code for the div.
      */
     function render()
     {
@@ -91,28 +93,27 @@ class TpDivMerchantHelper extends TpMerchantHelper {
         ));
 
         $out = "";
-        if (!$this->disableButtonCss)
-        {
+        if (!$this->disableButtonCss) {
             $skin = $this->skin == "" ? "" : "/$this->skin";
-            $href = "{$url}div/style$skin/div.css?v=".time();
-            $href = \dlds\thepay\api\TpEscaper::htmlEntityEncode($href);
+            $href = "{$url}div/style$skin/div.css?v=" . time();
+            $href = TpEscaper::htmlEntityEncode($href);
             $out .= "<link href=\"$href\" type=\"text/css\" rel=\"stylesheet\" />\n";
         }
 
-        $thepayGateUrl = $url.'div/index.php?'.$this->buildQuery($queryArgs);
-        $thepayGateUrl = \dlds\thepay\api\TpEscaper::jsonEncode($thepayGateUrl);
-        $disableThepayPopupCss = \dlds\thepay\api\TpEscaper::jsonEncode($this->disablePopupCss);
+        $thepayGateUrl = $url . 'div/index.php?' . $this->buildQuery($queryArgs);
+        $thepayGateUrl = TpEscaper::jsonEncode($thepayGateUrl);
+        $disableThepayPopupCss = TpEscaper::jsonEncode($this->disablePopupCss);
         $out .= "<script type=\"text/javascript\">";
         $out .= "\tvar thepayGateUrl = $thepayGateUrl,\n";
         $out .= "\t\tdisableThepayPopupCss = $disableThepayPopupCss;\n";
         $out .= "</script>\n";
 
-        $src = "{$url}div/js/jquery.js?v=".time();
-        $src = \dlds\thepay\api\TpEscaper::htmlEntityEncode($src);
+        $src = "{$url}div/js/jquery.js?v=" . time();
+        $src = TpEscaper::htmlEntityEncode($src);
         $out .= "<script type=\"text/javascript\" src=\"$src\" async=\"async\"></script>\n";
 
-        $src = "{$url}div/js/div.js?v=".time();
-        $src = \dlds\thepay\api\TpEscaper::htmlEntityEncode($src);
+        $src = "{$url}div/js/div.js?v=" . time();
+        $src = TpEscaper::htmlEntityEncode($src);
         $out .= "<script type=\"text/javascript\" src=\"$src\" async=\"async\"></script>\n";
 
         $out .= "<div id=\"thepay-method-box\" style=\"border: 0;\"></div>\n";

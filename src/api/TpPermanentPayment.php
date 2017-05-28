@@ -2,18 +2,19 @@
 
 namespace dlds\thepay\api;
 
-class TpPermanentPayment {
-
+class TpPermanentPayment
+{
     /**
      * @var TpMerchantConfig
      */
     protected $config;
+
     protected $merchantData;
     protected $description;
     protected $returnUrl;
     protected $signature;
 
-    function __construct(TpMerchantConfig $config, $merchantData, $description, $returnUrl)
+    function __construct(TpMerchantConfig $config, $merchantData = null, $description = null, $returnUrl = null)
     {
         $this->config = $config;
         $this->merchantData = $merchantData;

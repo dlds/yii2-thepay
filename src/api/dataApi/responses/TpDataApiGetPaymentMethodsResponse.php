@@ -2,7 +2,11 @@
 
 namespace dlds\thepay\api\dataApi\responses;
 
-class TpDataApiGetPaymentMethodsResponse extends TpDataApiResponse {
+use dlds\thepay\api\dataApi\parameters\TpDataApiMerchantAccountMethod;
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiGetPaymentMethodsResponse extends TpDataApiResponse
+{
 
     protected static $listPaths = array(
         array('methods', 'method')
@@ -29,9 +33,8 @@ class TpDataApiGetPaymentMethodsResponse extends TpDataApiResponse {
         $instance->setAccountId($response['accountId']);
 
         $methods = array();
-        foreach ($response['methods'] as $method)
-        {
-            $methods[] = new \dlds\thepay\api\dataApi\parameters\TpDataApiMerchantAccountMethod($method);
+        foreach ($response['methods'] as $method) {
+            $methods[] = new TpDataApiMerchantAccountMethod($method);
         }
         unset($method);
         $instance->setMethods($methods);
@@ -52,7 +55,7 @@ class TpDataApiGetPaymentMethodsResponse extends TpDataApiResponse {
      */
     public function setAccountId($accountId = null)
     {
-        $this->accountId = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $accountId);
+        $this->accountId = TpValueFormatter::format('int', $accountId);
     }
 
     /**
@@ -68,8 +71,9 @@ class TpDataApiGetPaymentMethodsResponse extends TpDataApiResponse {
      */
     public function setMethods(array $methods = array())
     {
-        $this->methods = \dlds\thepay\api\dataApi\TpValueFormatter::formatList(
-                'TpDataApiMerchantAccountMethod', $methods
+        $this->methods = TpValueFormatter::formatList(
+            'TpDataApiMerchantAccountMethod', $methods
         );
     }
+
 }

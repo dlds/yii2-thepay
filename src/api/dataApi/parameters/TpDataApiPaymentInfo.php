@@ -2,307 +2,285 @@
 
 namespace dlds\thepay\api\dataApi\parameters;
 
-class TpDataApiPaymentInfo extends \dlds\thepay\api\dataApi\TpDataApiObject {
+use dlds\thepay\api\dataApi\TpDataApiObject;
+use dlds\thepay\api\dataApi\TpValueFormatter;
 
-    /**
-     * @var bool|null
-     */
-    protected $isOffline;
+class TpDataApiPaymentInfo extends TpDataApiObject {
+	
+	/**
+	 * @var bool|null
+	 */
+	protected $isOffline;
 
-    /**
-     * @var string|null
-     */
-    protected $paymentPageUrl;
+	/**
+	 * @var string|null
+	 */
+	protected $paymentPageUrl;
 
-    /**
-     * Only applicable for unpaid payments.
-     * @var string|null
-     */
-    protected $paymentInfoUrl;
+	/**
+	 * Only applicable for unpaid payments.
+	 * @var string|null
+	 */
+	protected $paymentInfoUrl;
 
-    /**
-     * Only applicable for unpaid payments.
-     *
-     * @var string|null
-     */
-    protected $methodChangeUrl;
+	/**
+	 * Only applicable for unpaid payments.
+	 *
+	 * @var string|null
+	 */
+	protected $methodChangeUrl;
 
-    /**
-     * @var float|null
-     */
-    protected $value;
+	/**
+	 * @var float|null
+	 */
+	protected $value;
 
-    /**
-     * Only applicable for offline payments. 
-     *
-     * @var string|null
-     */
-    protected $accountNumberPrefix;
+	/**
+	 * Only applicable for offline payments. 
+	 *
+	 * @var string|null
+	 */
+	protected $accountNumberPrefix;
 
-    /**
-     * Only applicable for offline payments.
-     *
-     * @var string|null
-     */
-    protected $accountNumber;
+	/**
+	 * Only applicable for offline payments. 
+	 *
+	 * @var string|null
+	 */
+	protected $accountNumber;
 
-    /**
-     * Only applicable for offline payments. 
-     *
-     * @var string|null
-     */
-    protected $bankCode;
+	/**
+	 * Only applicable for offline payments. 
+	 *
+	 * @var string|null
+	 */
+	protected $bankCode;
 
-    /**
-     * Only applicable for offline payments.
-     *
-     * @var string|null
-     */
-    protected $vs;
+	/**
+	 * Only applicable for offline payments. 
+	 *
+	 * @var string|null
+	 */
+	protected $vs;
 
-    /**
-     * Only applicable for offline payments. 
-     *
-     * @var string|null
-     */
-    protected $ss;
+	/**
+	 * Only applicable for offline payments. 
+	 *
+	 * @var string|null
+	 */
+	protected $ss;
 
-    /**
-     * Only applicable for offline payments.
-     *
-     * @var string|null
-     */
-    protected $ebankingUrl;
+	/**
+	 * Only applicable for offline payments. 
+	 *
+	 * @var string|null
+	 */
+	protected $ebankingUrl;
+	
+	/**
+	 * Only for SuperCash.
+	 * 
+	 * @var string|null
+	 */
+	protected $scCode;
+	
+	/**
+	 * Only for SuperCash.
+	 * 
+	 * @var string|null
+	 */
+	protected $scBarcodeUrl;
 
-    /**
-     * Only for SuperCash.
-     * 
-     * @var string|null
-     */
-    protected $scCode;
+	/**
+	 * @return bool|null
+	 */
+	public function getIsOffline() {
+		return $this->isOffline;
+	}
 
-    /**
-     * Only for SuperCash.
-     *
-     * @var string|null
-     */
-    protected $scBarcodeUrl;
+	/**
+	 * @param bool|null $isOffline
+	 */
+	public function setIsOffline($isOffline = null) {
+		$this->isOffline = TpValueFormatter::format('bool', $isOffline);
+	}
 
-    /**
-     * @return bool|null
-     */
-    public function getIsOffline()
-    {
-        return $this->isOffline;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getPaymentPageUrl() {
+		return $this->paymentPageUrl;
+	}
 
-    /**
-     * @param bool|null $isOffline
-     */
-    public function setIsOffline($isOffline = null)
-    {
-        $this->isOffline = \dlds\thepay\api\dataApi\TpValueFormatter::format('bool', $isOffline);
-    }
+	/**
+	 * @param string|null $paymentPageUrl
+	 */
+	public function setPaymentPageUrl($paymentPageUrl = null) {
+		$this->paymentPageUrl = TpValueFormatter::format(
+			'string', $paymentPageUrl
+		);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getPaymentPageUrl()
-    {
-        return $this->paymentPageUrl;
-    }
+	/**
+	 * @return string|null
+	 */
+	function getPaymentInfoUrl() {
+		return $this->paymentInfoUrl;
+	}
 
-    /**
-     * @param string|null $paymentPageUrl
-     */
-    public function setPaymentPageUrl($paymentPageUrl = null)
-    {
-        $this->paymentPageUrl = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $paymentPageUrl
-        );
-    }
+	/**
+	 * @param string|null $paymentInfoUrl
+	 */
+	function setPaymentInfoUrl($paymentInfoUrl = null) {
+		$this->paymentInfoUrl = TpValueFormatter::format(
+			'string', $paymentInfoUrl
+		);
+	}
 
-    /**
-     * @return string|null
-     */
-    function getPaymentInfoUrl()
-    {
-        return $this->paymentInfoUrl;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getMethodChangeUrl() {
+		return $this->methodChangeUrl;
+	}
 
-    /**
-     * @param string|null $paymentInfoUrl
-     */
-    function setPaymentInfoUrl($paymentInfoUrl = null)
-    {
-        $this->paymentInfoUrl = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $paymentInfoUrl
-        );
-    }
+	/**
+	 * @param string|null $methodChangeUrl
+	 */
+	public function setMethodChangeUrl($methodChangeUrl = null) {
+		$this->methodChangeUrl = TpValueFormatter::format(
+			'string', $methodChangeUrl
+		);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getMethodChangeUrl()
-    {
-        return $this->methodChangeUrl;
-    }
+	/**
+	 * @return float|null
+	 */
+	public function getValue() {
+		return $this->value;
+	}
 
-    /**
-     * @param string|null $methodChangeUrl
-     */
-    public function setMethodChangeUrl($methodChangeUrl = null)
-    {
-        $this->methodChangeUrl = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $methodChangeUrl
-        );
-    }
+	/**
+	 * @param float|null $value
+	 */
+	public function setValue($value) {
+		$this->value = TpValueFormatter::format('float', $value);
+	}
 
-    /**
-     * @return float|null
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getAccountNumberPrefix() {
+		return $this->accountNumberPrefix;
+	}
 
-    /**
-     * @param float|null $value
-     */
-    public function setValue($value)
-    {
-        $this->value = \dlds\thepay\api\dataApi\TpValueFormatter::format('float', $value);
-    }
+	/**
+	 * @param string|null $accountNumberPrefix
+	 */
+	public function setAccountNumberPrefix($accountNumberPrefix = null) {
+		$this->accountNumberPrefix = TpValueFormatter::format(
+			'string', $accountNumberPrefix
+		);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getAccountNumberPrefix()
-    {
-        return $this->accountNumberPrefix;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getAccountNumber() {
+		return $this->accountNumber;
+	}
 
-    /**
-     * @param string|null $accountNumberPrefix
-     */
-    public function setAccountNumberPrefix($accountNumberPrefix = null)
-    {
-        $this->accountNumberPrefix = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $accountNumberPrefix
-        );
-    }
+	/**
+	 * @param string|null $accountNumber
+	 */
+	public function setAccountNumber($accountNumber = null) {
+		$this->accountNumber = TpValueFormatter::format(
+			'string', $accountNumber
+		);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getAccountNumber()
-    {
-        return $this->accountNumber;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getBankCode() {
+		return $this->bankCode;
+	}
 
-    /**
-     * @param string|null $accountNumber
-     */
-    public function setAccountNumber($accountNumber = null)
-    {
-        $this->accountNumber = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $accountNumber
-        );
-    }
+	/**
+	 * @param string|null $bankCode
+	 */
+	public function setBankCode($bankCode = null) {
+		$this->bankCode = TpValueFormatter::format('string', $bankCode);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getBankCode()
-    {
-        return $this->bankCode;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getVs() {
+		return $this->vs;
+	}
 
-    /**
-     * @param string|null $bankCode
-     */
-    public function setBankCode($bankCode = null)
-    {
-        $this->bankCode = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $bankCode);
-    }
+	/**
+	 * @param string|null $vs
+	 */
+	public function setVs($vs = null) {
+		$this->vs = TpValueFormatter::format('string', $vs);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getVs()
-    {
-        return $this->vs;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getSs() {
+		return $this->ss;
+	}
 
-    /**
-     * @param string|null $vs
-     */
-    public function setVs($vs = null)
-    {
-        $this->vs = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $vs);
-    }
+	/**
+	 * @param string|null $ss
+	 */
+	public function setSs($ss = null) {
+		$this->ss = TpValueFormatter::format('string', $ss);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getSs()
-    {
-        return $this->ss;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getEbankingUrl() {
+		return $this->ebankingUrl;
+	}
 
-    /**
-     * @param string|null $ss
-     */
-    public function setSs($ss = null)
-    {
-        $this->ss = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $ss);
-    }
+	/**
+	 * @param string|null $ebankingUrl
+	 */
+	public function setEbankingUrl($ebankingUrl = null) {
+		$this->ebankingUrl = TpValueFormatter::format('string', $ebankingUrl);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getEbankingUrl()
-    {
-        return $this->ebankingUrl;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getScCode() {
+		return $this->scCode;
+	}
 
-    /**
-     * @param string|null $ebankingUrl
-     */
-    public function setEbankingUrl($ebankingUrl = null)
-    {
-        $this->ebankingUrl = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $ebankingUrl);
-    }
+	/**
+	 * @param string|null $scCode
+	 */
+	public function setScCode($scCode = null) {
+		$this->scCode = TpValueFormatter::format('string', $scCode);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getScCode()
-    {
-        return $this->scCode;
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getScBarcodeUrl() {
+		return $this->scBarcodeUrl;
+	}
 
-    /**
-     * @param string|null $scCode
-     */
-    public function setScCode($scCode = null)
-    {
-        $this->scCode = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $scCode);
-    }
+	/**
+	 * @param string|null $scBarcodeUrl
+	 */
+	public function setScBarcodeUrl($scBarcodeUrl = null) {
+		$this->scBarcodeUrl = TpValueFormatter::format('string', $scBarcodeUrl);
+	}
 
-    /**
-     * @return string|null
-     */
-    public function getScBarcodeUrl()
-    {
-        return $this->scBarcodeUrl;
-    }
-
-    /**
-     * @param string|null $scBarcodeUrl
-     */
-    public function setScBarcodeUrl($scBarcodeUrl = null)
-    {
-        $this->scBarcodeUrl = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $scBarcodeUrl);
-    }
 }

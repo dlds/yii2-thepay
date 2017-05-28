@@ -7,8 +7,8 @@ namespace dlds\thepay\api;
  * Modify properties in this class to contain valid data for your
  * account. This data you can find in the ThePay administration interface.
  */
-class TpMerchantConfig {
-
+class TpMerchantConfig
+{
     /**
      * Gates urls
      */

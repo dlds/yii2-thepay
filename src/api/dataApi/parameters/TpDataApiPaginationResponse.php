@@ -2,7 +2,10 @@
 
 namespace dlds\thepay\api\dataApi\parameters;
 
-class TpDataApiPaginationResponse extends TpDataApiPagination {
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiPaginationResponse extends TpDataApiPagination
+{
 
     /**
      * @var int|null
@@ -22,6 +25,7 @@ class TpDataApiPaginationResponse extends TpDataApiPagination {
      */
     public function setTotalPages($totalPages = null)
     {
-        $this->totalPages = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $totalPages);
+        $this->totalPages = TpValueFormatter::format('int', $totalPages);
     }
+
 }

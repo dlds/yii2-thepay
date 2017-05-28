@@ -2,16 +2,18 @@
 
 namespace dlds\thepay\api;
 
+use dlds\thepay\api\exceptions\TpInvalidSignatureException;
+use dlds\thepay\api\exceptions\TpMissingParameterException;
+
 /**
  * Class to handle returned payment callback from ThePay gate.
  */
-class TpReturnedPayment extends TpPayment {
-
+class TpReturnedPayment extends TpPayment
+{
     /**
      * @var integer merchantId from request
      */
     protected $requestMerchantId = null;
-
     /**
      * @var integer accountId from request
      */
@@ -91,12 +93,10 @@ class TpReturnedPayment extends TpPayment {
      * Correctly paid.
      */
     const STATUS_OK = 2;
-
     /**
      * Canceled by customer.
      */
     const STATUS_CANCELED = 3;
-
     /**
      * Some error occurred during payment process.
      * Probably not payed.
@@ -123,26 +123,25 @@ class TpReturnedPayment extends TpPayment {
      * @var array required arguments of incoming request.
      */
     protected static $REQUIRED_ARGS = array(
-        "value", "currency", "methodId", "description", "merchantData",
-        "status", "paymentId", "ipRating", "isOffline", "needConfirm"
+        'value', 'currency', 'methodId', 'description', 'merchantData',
+        'status', 'paymentId', 'ipRating', 'isOffline', 'needConfirm'
     );
 
     /**
      * @var array optional arguments of incoming request.
      */
     protected static $OPTIONAL_ARGS = array(
-        "isConfirm", "variableSymbol", "specificSymbol",
-        "deposit", "isRecurring", "customerAccountNumber",
-        "customerAccountName"
+        'isConfirm', 'variableSymbol', 'specificSymbol',
+        'deposit', 'isRecurring', 'customerAccountNumber',
+        'customerAccountName'
     );
-
     /**
      * @var array default values for optional args
      */
     protected static $OPTIONAL_ARGS_DEFAULT = array(
-        "isConfirm" => NULL, "variableSymbol" => NULL, "specificSymbol" => NULL,
-        "deposit" => NULL, "isRecurring" => NULL, "customerAccountNumber" => NULL,
-        "customerAccountName" => NULL
+        'isConfirm' => NULL, 'variableSymbol' => NULL, 'specificSymbol' => NULL,
+        'deposit' => NULL, 'isRecurring' => NULL,
+        'customerAccountNumber' => NULL, 'customerAccountName' => NULL,
     );
 
     /**
@@ -150,41 +149,33 @@ class TpReturnedPayment extends TpPayment {
      * @param args Optional arguments parameter, that can specify the
      *   arguments of the returned payment. If not specified, it is taken
      *   from the $_REQUEST superglobal array.
+     * @throws TpMissingParameterException
      */
     function __construct(TpMerchantConfig $config, $args = NULL)
     {
         parent::__construct($config);
 
-        if (is_null($args))
-        {
+        if (is_null($args)) {
             $args = &$_REQUEST;
         }
 
-        if (!empty($args['merchantId']))
-        {
+        if (!empty($args['merchantId'])) {
             $this->requestMerchantId = $args['merchantId'];
         }
-        if (!empty($args['accountId']))
-        {
+        if (!empty($args['accountId'])) {
             $this->requestAccountId = $args['accountId'];
         }
-        foreach (self::$REQUIRED_ARGS as $arg)
-        {
-            if (!isset($args[$arg]))
-            {
-                throw new exceptions\TpMissingParameterException($arg);
+        foreach (self::$REQUIRED_ARGS as $arg) {
+            if (!isset($args[$arg])) {
+                throw new TpMissingParameterException($arg);
             }
             $this->$arg = $args[$arg];
         }
 
-        foreach (self::$OPTIONAL_ARGS_DEFAULT as $arg => $defaultValue)
-        {
-            if (!isset($args[$arg]))
-            {
+        foreach (self::$OPTIONAL_ARGS_DEFAULT as $arg => $defaultValue) {
+            if (!isset($args[$arg])) {
                 $this->$arg = $defaultValue;
-            }
-            else
-            {
+            } else {
                 $this->$arg = $args[$arg];
             }
         }
@@ -202,38 +193,33 @@ class TpReturnedPayment extends TpPayment {
     function verifySignature($signature = NULL)
     {
         // check merchantId and accountId from request
-        if ($this->requestMerchantId != $this->config->merchantId || $this->requestAccountId != $this->config->accountId)
-        {
-            throw new exceptions\TpInvalidSignatureException();
+        if ($this->requestMerchantId != $this->config->merchantId
+            || $this->requestAccountId != $this->config->accountId
+        ) {
+            throw new TpInvalidSignatureException();
         }
 
-        if ($signature === null)
-        {
+        if ($signature === null) {
             $signature = $this->signature;
         }
         // Compute the signature for arguments specified, and compare
         // it to the specified signature.
 
         $out = array();
-        $out[] = "merchantId=".$this->requestMerchantId;
-        $out[] = "accountId=".$this->requestAccountId;
-        foreach (array_merge(self::$REQUIRED_ARGS, self::$OPTIONAL_ARGS) as $arg)
-        {
-            if (!is_null($this->$arg))
-            {
-                $out[] = $arg."=".$this->$arg;
+        $out[] = "merchantId=" . $this->requestMerchantId;
+        $out[] = "accountId=" . $this->requestAccountId;
+        foreach (array_merge(self::$REQUIRED_ARGS, self::$OPTIONAL_ARGS) as $arg) {
+            if (!is_null($this->$arg)) {
+                $out[] = $arg . "=" . $this->$arg;
             }
         }
-        $out[] = "password=".$this->config->password;
+        $out[] = "password=" . $this->config->password;
 
         $sig = $this->hashFunction(implode("&", $out));
-        if ($sig == $signature)
-        {
+        if ($sig == $signature) {
             return true;
-        }
-        else
-        {
-            throw new exceptions\TpInvalidSignatureException();
+        } else {
+            throw new TpInvalidSignatureException();
         }
     }
 
@@ -246,12 +232,9 @@ class TpReturnedPayment extends TpPayment {
      */
     function getCurrency()
     {
-        if (is_null($this->currency))
-        {
+        if (is_null($this->currency)) {
             return "CZK";
-        }
-        else
-        {
+        } else {
             return $this->currency;
         }
     }

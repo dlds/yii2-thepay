@@ -2,7 +2,8 @@
 
 namespace dlds\thepay\api;
 
-class TpEscaper {
+class TpEscaper
+{
 
     /**
      * JSON-encode with all hex options enabled. Results in values insertable

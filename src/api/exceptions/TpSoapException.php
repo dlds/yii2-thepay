@@ -2,6 +2,7 @@
 
 namespace dlds\thepay\api\exceptions;
 
-class TpSoapException extends TpException {
+class TpSoapException extends TpException
+{
 
 }

@@ -2,7 +2,11 @@
 
 namespace dlds\thepay\api\dataApi\responses;
 
-class TpDataApiGetPaymentResponse extends TpDataApiResponse {
+use dlds\thepay\api\dataApi\parameters\TpDataApiPayment;
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiGetPaymentResponse extends TpDataApiResponse
+{
 
     protected static $dateTimePaths = array(
         array('payment', 'createdOn'),
@@ -24,7 +28,7 @@ class TpDataApiGetPaymentResponse extends TpDataApiResponse {
         /** @var TpDataApiGetPaymentResponse $instance */
         $instance = parent::createFromResponse($response);
 
-        $payment = new \dlds\thepay\api\dataApi\parameters\TpDataApiPayment($response['payment']);
+        $payment = new TpDataApiPayment($response['payment']);
         $instance->setPayment($payment);
 
         return $instance;
@@ -41,8 +45,9 @@ class TpDataApiGetPaymentResponse extends TpDataApiResponse {
     /**
      * @param TpDataApiPayment|null $payment
      */
-    public function setPayment(\dlds\thepay\api\dataApi\parameters\TpDataApiPayment $payment = null)
+    public function setPayment(TpDataApiPayment $payment = null)
     {
-        $this->payment = \dlds\thepay\api\dataApi\TpValueFormatter::format('TpDataApiPayment', $payment);
+        $this->payment = TpValueFormatter::format('TpDataApiPayment', $payment);
     }
+
 }

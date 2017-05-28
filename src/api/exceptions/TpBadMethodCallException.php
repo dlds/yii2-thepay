@@ -2,6 +2,7 @@
 
 namespace dlds\thepay\api\exceptions;
 
-class TpBadMethodCallException extends TpException {
+class TpBadMethodCallException extends TpException
+{
 
 }

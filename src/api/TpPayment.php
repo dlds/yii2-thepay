@@ -1,12 +1,13 @@
 <?php
 
 namespace dlds\thepay\api;
+use dlds\thepay\api\exceptions\TpInvalidParameterException;
 
 /**
  * Class representing one payment instance.
  */
-class TpPayment {
-
+class TpPayment
+{
     /**
      * Config containing merchant-specific configuration options.
      * Instance of TpMerchantConfig, passed to the TpPayment constructor.
@@ -45,6 +46,15 @@ class TpPayment {
     protected $returnUrl = NULL;
 
     /**
+     * Target of the “Back to e-shop” button on the offline payment info page.
+     * If not set, defaults to the account URL. Must be a valid HTTP or HTTPS
+     * URL.
+     *
+     * @var string|null
+     */
+    protected $backToEshopUrl = null;
+
+    /**
      * ID of payment method to use for paying. Setting this argument should
      * be result of user's selection, not merchant's selection.
      * @var integer
@@ -52,7 +62,8 @@ class TpPayment {
     protected $methodId = NULL;
 
     /**
-     * @var mixed Optional data about customer. Required for FerBuy method.
+     * @deprecated
+     * @var string
      */
     protected $customerData = NULL;
 
@@ -74,7 +85,13 @@ class TpPayment {
     /**
      * @var string numerical specific symbol (used only if payment method supports it).
      */
-    protected $merchantSpecificSymbol;
+    protected $merchantSpecificSymbol = NULL;
+
+    /**
+     * @var TpEetDph VAT decomposition for EET
+     */
+    protected $eetDph = NULL;
+
 
     /**
      * Constructor. Create the payment.
@@ -85,9 +102,8 @@ class TpPayment {
     {
         $this->config = $config;
 
-        if (is_null($this->returnUrl) && isset($_SERVER["HTTP_HOST"]) && isset($_SERVER["REQUEST_URI"]))
-        {
-            $this->returnUrl = ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"]) ? "https" : "http")."://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+        if (is_null($this->returnUrl) && isset($_SERVER["HTTP_HOST"]) && isset($_SERVER["REQUEST_URI"])) {
+            $this->returnUrl = ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"]) ? "https" : "http") . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
         }
     }
 
@@ -99,13 +115,10 @@ class TpPayment {
     public function setValue($value)
     {
         // Only positive numbers allowed.
-        if (!is_numeric($value) || (double) $value < 0)
-        {
-            throw new exceptions\TpInvalidParameterException("value");
-        }
-        else
-        {
-            $this->value = (double) $value;
+        if (!is_numeric($value) || (double)$value < 0) {
+            throw new TpInvalidParameterException("value");
+        } else {
+            $this->value = (double)$value;
         }
     }
 
@@ -143,6 +156,14 @@ class TpPayment {
     public function setReturnUrl($returnUrl)
     {
         $this->returnUrl = $returnUrl;
+    }
+
+    /**
+     * @param string|null $backToEshopUrl
+     */
+    public function setBackToEshopUrl($backToEshopUrl = null)
+    {
+        $this->backToEshopUrl = $backToEshopUrl;
     }
 
     /**
@@ -214,6 +235,14 @@ class TpPayment {
     }
 
     /**
+     * @return string|null
+     */
+    public function getBackToEshopUrl()
+    {
+        return $this->backToEshopUrl;
+    }
+
+    /**
      * Returns the methodId property. If methodId was not specified using
      * setMethodId() property, NULL is returned.
      * @return integer
@@ -224,41 +253,22 @@ class TpPayment {
     }
 
     /**
+     * @deprecated
      * Set customer data.
-     * @param mixed $data
+     * @param string $data
      */
-    public function setCustomerData($data)
+    public function setCustomerData($data = null)
     {
         $this->customerData = $data;
     }
 
     /**
-     * @return mixed previously set customer data
+     * @deprecated
+     * @return string previously set customer data
      */
     public function getCustomerData()
     {
         return $this->customerData;
-    }
-
-    /**
-     * Get specific property from the customerData JSON string.
-     *
-     * @return mixed
-     */
-    public function getCustomerDataField($field)
-    {
-        if (!$this->customerData)
-        {
-            return null;
-        }
-
-        $obj = TpEscaper::jsonDecode($this->customerData);
-        if (!$obj instanceof stdClass)
-        {
-            return null;
-        }
-
-        return isset($obj->$field) ? $obj->$field : null;
     }
 
     /**
@@ -331,6 +341,22 @@ class TpPayment {
     }
 
     /**
+     * @return TpEetDph VAT decomposition for EET
+     */
+    function getEetDph()
+    {
+        return $this->eetDph;
+    }
+
+    /**
+     * @param TpEetDph $eetDph VAT decomposition for EET
+     */
+    function setEetDph(TpEetDph $eetDph = NULL)
+    {
+        $this->eetDph = $eetDph;
+    }
+
+    /**
      * List arguments to put into the URL. Returns associative array of
      * arguments that should be contained in the ThePay gate call.
      * @return array
@@ -342,61 +368,56 @@ class TpPayment {
         $input["merchantId"] = $this->config->merchantId;
         $input["accountId"] = $this->config->accountId;
 
-        if (!is_null($this->value))
-        {
-            $input["value"] = $this->value;
+        if (!is_null($this->value)) {
+            $input["value"] = number_format($this->value, 2, '.', '');
         }
 
-        if (!is_null($this->currency))
-        {
+        if (!is_null($this->currency)) {
             $input["currency"] = $this->currency;
         }
 
-        if (!is_null($this->description))
-        {
+        if (!is_null($this->description)) {
             $input["description"] = $this->description;
         }
 
-        if (!is_null($this->merchantData))
-        {
+        if (!is_null($this->merchantData)) {
             $input["merchantData"] = $this->merchantData;
         }
 
-        if (!is_null($this->customerData))
-        {
-            if ($this->customerData instanceof ferbuy\TpFerBuyOrder)
-            {
-                $input["customerData"] = $this->customerData->toJSON();
-            }
+        if (!is_null($this->customerData)) {
+            $input["customerData"] = $this->customerData;
         }
 
-        if (!is_null($this->customerEmail))
-        {
+        if (!is_null($this->customerEmail)) {
             $input["customerEmail"] = $this->customerEmail;
         }
 
-        if (!is_null($this->returnUrl))
-        {
+        if (!is_null($this->returnUrl)) {
             $input["returnUrl"] = $this->returnUrl;
         }
 
-        if (!is_null($this->methodId))
-        {
+        $backToEshopUrlIsNull = is_null($this->backToEshopUrl);
+        if (!$backToEshopUrlIsNull) {
+            $input['backToEshopUrl'] = $this->backToEshopUrl;
+        }
+
+        if (!is_null($this->methodId)) {
             $input["methodId"] = $this->methodId;
         }
 
-        if (!is_null($this->deposit))
-        {
-            $input["deposit"] = $this->deposit;
+        if (!is_null($this->deposit)) {
+            $input["deposit"] = $this->deposit ? '1' : '0';
         }
-        if (!is_null($this->isRecurring))
-        {
+        if (!is_null($this->isRecurring)) {
             $input["isRecurring"] = $this->isRecurring;
         }
 
-        if (!is_null($this->merchantSpecificSymbol))
-        {
+        if (!is_null($this->merchantSpecificSymbol)) {
             $input["merchantSpecificSymbol"] = $this->merchantSpecificSymbol;
+        }
+
+        if (!is_null($this->eetDph) && !$this->eetDph->isEmpty()) {
+            $input = array_merge($input, $this->eetDph->toArray());
         }
 
         return $input;
@@ -414,12 +435,11 @@ class TpPayment {
         $input = $this->getArgs();
 
         $str = "";
-        foreach ($input as $key => $val)
-        {
-            $str .= $key."=".$val."&";
+        foreach ($input as $key => $val) {
+            $str .= $key . "=" . $val . "&";
         }
 
-        $str .= "password=".$this->config->password;
+        $str .= "password=" . $this->config->password;
         return $this->hashFunction($str);
     }
 
@@ -435,6 +455,6 @@ class TpPayment {
 
     public function __toString()
     {
-        return 'TpGatePayment[value: '.$this->value.'; currency: '.$this->currency.'; description: '.$this->description.'; merchantData: '.$this->merchantData.'; returnUrl: '.$this->returnUrl.'; methodId: '.$this->methodId.'; deposit: '.$this->deposit.'; isRecurring: '.$this->isRecurring.'; merchantSpecificSymbol: '.$this->merchantSpecificSymbol.']';
+        return 'TpGatePayment[value: ' . $this->value . '; currency: ' . $this->currency . '; description: ' . $this->description . '; merchantData: ' . $this->merchantData . '; returnUrl: ' . $this->returnUrl . '; methodId: ' . $this->methodId . '; deposit: ' . $this->deposit . '; isRecurring: ' . $this->isRecurring . '; merchantSpecificSymbol: ' . $this->merchantSpecificSymbol . ']';
     }
 }

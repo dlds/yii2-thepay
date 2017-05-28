@@ -2,7 +2,12 @@
 
 namespace dlds\thepay\api\dataApi\responses;
 
-class TpDataApiResponse extends \dlds\thepay\api\dataApi\TpDataApiObject {
+use dlds\thepay\api\dataApi\TpDataApiObject;
+use dlds\thepay\api\dataApi\TpValueFormatter;
+use dlds\thepay\api\TpUtils;
+
+class TpDataApiResponse extends TpDataApiObject
+{
 
     /**
      * @var array[]
@@ -27,7 +32,7 @@ class TpDataApiResponse extends \dlds\thepay\api\dataApi\TpDataApiObject {
     public static function createFromResponse(array $response)
     {
         $keys = array('merchantId');
-        $data = \dlds\thepay\api\TpUtils::filterKeys($response, $keys);
+        $data = TpUtils::filterKeys($response, $keys);
         $instance = new static($data);
         return $instance;
     }
@@ -61,6 +66,7 @@ class TpDataApiResponse extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setMerchantId($merchantId)
     {
-        $this->merchantId = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $merchantId);
+        $this->merchantId = TpValueFormatter::format('int', $merchantId);
     }
+
 }

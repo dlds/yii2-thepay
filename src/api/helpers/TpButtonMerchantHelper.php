@@ -1,13 +1,14 @@
 <?php
 
 namespace dlds\thepay\api\helpers;
+use dlds\thepay\api\TpEscaper;
 
 /**
  * Button helper, that generates simple text button that points to the
  * ThePay page, where rest of the functionality occurs.
  */
-class TpButtonMerchantHelper extends TpMerchantHelper {
-
+class TpButtonMerchantHelper extends TpMerchantHelper
+{
     /**
      * Button visual style. If left blank, only simple text link will be
      * created. Otherwise, one of button styles specified in ThePay API
@@ -32,8 +33,7 @@ class TpButtonMerchantHelper extends TpMerchantHelper {
     public function setButtonStyle($buttonStyle, $buttonText = NULL)
     {
         $this->buttonStyle = $buttonStyle;
-        if (!is_null($buttonText))
-        {
+        if (!is_null($buttonText)) {
             $this->buttonText = $buttonText;
         }
     }
@@ -63,28 +63,41 @@ class TpButtonMerchantHelper extends TpMerchantHelper {
     }
 
     /**
+     * Button link target URL.
+     *
+     * @return string
+     */
+    public function buildUrl()
+    {
+        $gateUrl = $this->payment->getMerchantConfig()->gateUrl;
+        $query = $this->buildQuery();
+        if (is_null($this->payment->getMethodId())) {
+            $query .= '&methodSelectionAllowed';
+        }
+        return $gateUrl . '?' . $query;
+    }
+
+    /**
      * Return the HTML code for the button.
      */
     public function render()
     {
-        $gateUrl = $this->payment->getMerchantConfig()->gateUrl;
+        $targetUrl = TpEscaper::htmlEntityEncode(self::buildUrl());
 
-        $targetUrl = \dlds\thepay\api\TpEscaper::htmlEntityEncode("{$gateUrl}iframe/");
-        $targetUrl = "$targetUrl?".$this->buildQuery();
-
-        switch ($this->buttonStyle)
-        {
+        switch ($this->buttonStyle) {
             case "":
                 return "<a href=\"$targetUrl\">$this->buttonText</a>";
                 break;
 
             default:
+                $gateUrl = $this->payment->getMerchantConfig()->gateUrl;
                 $buttonStyle = rawurlencode($this->buttonStyle);
-                $src = "{$gateUrl}buttons/$buttonStyle.png";
-                $src = \dlds\thepay\api\TpEscaper::htmlEntityEncode($src);
+                $src = TpEscaper::htmlEntityEncode(
+                    $gateUrl . 'buttons/' . $buttonStyle . '.png'
+                );
 
-                $title = \dlds\thepay\api\TpEscaper::htmlEntityEncode($this->buttonText);
-                return "<a href=\"".$targetUrl."\"><img src=\"$src\" alt=\"$title\" title=\"$title\" /></a>";
+                $title = TpEscaper::htmlEntityEncode($this->buttonText);
+                return "<a href=\"" . $targetUrl . "\"><img src=\"$src\" alt=\"$title\" title=\"$title\" /></a>";
                 break;
         }
     }

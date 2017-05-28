@@ -2,7 +2,8 @@
 
 namespace dlds\thepay\api\dataApi\processors;
 
-class TpDataApiDateTimeDeflater extends TpDataApiProcessorWithPaths {
+class TpDataApiDateTimeDeflater extends TpDataApiProcessorWithPaths
+{
 
     /**
      * @param mixed $value
@@ -12,26 +13,21 @@ class TpDataApiDateTimeDeflater extends TpDataApiProcessorWithPaths {
     protected function processItem($value, array $currentPath)
     {
         $isNull = is_null($value);
-        if ($isNull)
-        {
+        if ($isNull) {
             $processed = null;
-        }
-        else
-        {
+        } else {
             $onPath = $this->onPath($currentPath);
-            if ($onPath)
-            {
+            if ($onPath) {
                 /** @var DateTime $value */
                 $processed = $value->format('c');
-            }
-            else
-            {
+            } else {
                 $processed = parent::processItem(
-                        $value, $currentPath
+                    $value, $currentPath
                 );
             }
         }
 
         return $processed;
     }
+
 }

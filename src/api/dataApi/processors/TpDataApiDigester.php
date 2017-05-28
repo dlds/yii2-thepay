@@ -2,7 +2,8 @@
 
 namespace dlds\thepay\api\dataApi\processors;
 
-class TpDataApiDigester extends TpDataApiProcessor {
+class TpDataApiDigester extends TpDataApiProcessor
+{
 
     /**
      * Hashes are converted to a SHA256 digest of its string representation
@@ -17,14 +18,12 @@ class TpDataApiDigester extends TpDataApiProcessor {
     {
         $processed = parent::processHash($data, $currentPath);
         $stringParts = array();
-        foreach ($processed as $key => $value)
-        {
-            if ($value == '')
-            {
+        foreach ($processed as $key => $value) {
+            if ($value == '') {
                 // Empty values are not part of the digest. Not even its key.
                 continue;
             }
-            $stringParts[] = $key.'='.$value;
+            $stringParts[] = $key . '=' . $value;
         }
         unset($key, $value);
 
@@ -59,20 +58,20 @@ class TpDataApiDigester extends TpDataApiProcessor {
      */
     protected function processItem($value, array $currentPath)
     {
+
         $processed = parent::processItem($value, $currentPath);
+
         $isBool = is_bool($processed);
-        if ($isBool)
-        {
+        if ($isBool) {
             // Hodnota pravda/nepravda se převede na číslo 0/1.
-            $processedInt = (int) $value;
-            $processedString = (string) $processedInt;
-        }
-        else
-        {
+            $processedInt = (int)$value;
+            $processedString = (string)$processedInt;
+        } else {
             // Zbytek na řetězec. Prázdné řetězce se následně vyřadí.
-            $processedString = (string) $processed;
+            $processedString = (string)$processed;
         }
 
         return $processedString;
     }
+
 }

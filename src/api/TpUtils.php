@@ -2,7 +2,8 @@
 
 namespace dlds\thepay\api;
 
-class TpUtils {
+class TpUtils
+{
 
     /**
      * Filters out all keys that are not in the $keys list.
@@ -18,8 +19,7 @@ class TpUtils {
         $presentKeys = array_flip($presentKeysKeys);
 
         $filtered = array();
-        foreach ($presentKeys as $key)
-        {
+        foreach ($presentKeys as $key) {
             $filtered[$key] = $array[$key];
         }
         unset($key);
@@ -34,17 +34,13 @@ class TpUtils {
     public static function toArrayRecursive($value)
     {
         $array = array();
-        foreach ($value as $k => $v)
-        {
-            $item = & $array[$k];
+        foreach ($value as $k => $v) {
+            $item =& $array[$k];
 
             $isArray = is_array($v);
-            if ($isArray || $v instanceof stdClass)
-            {
+            if ($isArray || $v instanceof stdClass) {
                 $item = static::toArrayRecursive($v);
-            }
-            else
-            {
+            } else {
                 $item = $v;
             }
         }
@@ -61,12 +57,9 @@ class TpUtils {
     public static function isList(array $array)
     {
         $count = count($array);
-        if ($count)
-        {
+        if ($count) {
             $range = range(0, $count - 1);
-        }
-        else
-        {
+        } else {
             $range = array();
         }
         $keys = array_keys($array);
@@ -79,12 +72,12 @@ class TpUtils {
     public static function requirePaths(array $paths)
     {
         $basePath = array(__DIR__);
-        foreach ($paths as $path)
-        {
+        foreach ($paths as $path) {
             $fullPathArray = array_merge($basePath, $path);
             $fullPathString = implode(DIRECTORY_SEPARATOR, $fullPathArray);
             require_once $fullPathString;
         }
         unset($path, $fullPathArray, $fullPathString);
     }
+
 }

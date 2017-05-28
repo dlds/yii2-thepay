@@ -70,6 +70,18 @@ interface ThePayPaymentSourceInterface
     public function getSourceTs();
 
     /**
+     * Retrieves is reccuring
+     * @return boolean
+     */
+    public function getSourceIsRecurring();
+
+    /**
+     * Retrieves is deposit
+     * @return boolean
+     */
+    public function getSourceIsDeposit();
+
+    /**
      * Retrieves source payment type
      * @return string random string
      */

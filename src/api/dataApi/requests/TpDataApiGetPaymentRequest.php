@@ -2,7 +2,10 @@
 
 namespace dlds\thepay\api\dataApi\requests;
 
-class TpDataApiGetPaymentRequest extends TpDataApiRequest {
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiGetPaymentRequest extends TpDataApiRequest
+{
 
     /**
      * @var int|null
@@ -22,6 +25,7 @@ class TpDataApiGetPaymentRequest extends TpDataApiRequest {
      */
     public function setPaymentId($paymentId = null)
     {
-        $this->paymentId = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $paymentId);
+        $this->paymentId = TpValueFormatter::format('int', $paymentId);
     }
+
 }

@@ -2,7 +2,10 @@
 
 namespace dlds\thepay\api\dataApi;
 
-abstract class TpDataApiObject implements \ArrayAccess {
+use dlds\thepay\api\TpUtils;
+
+abstract class TpDataApiObject implements \ArrayAccess
+{
 
     /**
      * TpAbstractModel constructor.
@@ -12,10 +15,9 @@ abstract class TpDataApiObject implements \ArrayAccess {
     public function __construct(array $data = array())
     {
         $keys = static::keys();
-        $filtered = \dlds\thepay\api\TpUtils::filterKeys($data, $keys);
+        $filtered = TpUtils::filterKeys($data, $keys);
 
-        foreach ($filtered as $key => $value)
-        {
+        foreach ($filtered as $key => $value) {
             $this[$key] = $value;
         }
         unset($value);
@@ -28,8 +30,7 @@ abstract class TpDataApiObject implements \ArrayAccess {
     {
         $data = array();
         $keys = self::keys();
-        foreach ($keys as $name)
-        {
+        foreach ($keys as $name) {
             $data[$name] = static::demodelizeRecursive($this->$name);
         }
         return $data;
@@ -51,8 +52,7 @@ abstract class TpDataApiObject implements \ArrayAccess {
         $sortedDataProperties = static::sortDataProperties($dataProperties);
 
         $propertyNames = array();
-        foreach ($sortedDataProperties as $property)
-        {
+        foreach ($sortedDataProperties as $property) {
             $propertyNames[] = $property->getName();
         }
         unset($property);
@@ -86,17 +86,13 @@ abstract class TpDataApiObject implements \ArrayAccess {
 
         $calledClassName = get_called_class();
 
-        foreach ($dataProperties as $property)
-        {
+        foreach ($dataProperties as $property) {
             $propertyClass = $property->getDeclaringClass();
             $propertyClassName = $propertyClass->getName();
 
-            if ($propertyClassName == $calledClassName)
-            {
+            if ($propertyClassName == $calledClassName) {
                 $own[] = $property;
-            }
-            else
-            {
+            } else {
                 $inherited[] = $property;
             }
         }
@@ -112,31 +108,25 @@ abstract class TpDataApiObject implements \ArrayAccess {
      */
     protected static function demodelizeRecursive($value)
     {
-        if ($value instanceof TpDataApiObject)
-        {
+        if ($value instanceof TpDataApiObject) {
             $demodelized = $value->toArray();
-        }
-        else
-        {
+        } else {
             $isArray = is_array($value);
-            if ($isArray)
-            {
+            if ($isArray) {
                 $demodelized = array();
-                foreach ($value as $k => $v)
-                {
+                foreach ($value as $k => $v) {
                     $demodelized[$k] = static::demodelizeRecursive($v);
                 }
                 unset($k, $v);
-            }
-            else
-            {
+            } else {
                 $demodelized = $value;
             }
         }
 
         return $demodelized;
     }
-    /*     * ** ArrayAccess *** */
+
+    /* *** ArrayAccess *** */
 
     /**
      * @param string $offset
@@ -155,7 +145,7 @@ abstract class TpDataApiObject implements \ArrayAccess {
      */
     public function offsetGet($offset)
     {
-        $getterName = 'get'.ucfirst($offset);
+        $getterName = 'get' . ucfirst($offset);
         $value = $this->$getterName();
         return $value;
     }
@@ -166,7 +156,7 @@ abstract class TpDataApiObject implements \ArrayAccess {
      */
     public function offsetSet($offset, $value)
     {
-        $setterName = 'set'.ucfirst($offset);
+        $setterName = 'set' . ucfirst($offset);
         $this->$setterName($value);
     }
 
@@ -177,4 +167,5 @@ abstract class TpDataApiObject implements \ArrayAccess {
     {
         $this->offsetSet($offset, null);
     }
+
 }

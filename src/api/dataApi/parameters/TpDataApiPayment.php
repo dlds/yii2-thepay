@@ -2,7 +2,12 @@
 
 namespace dlds\thepay\api\dataApi\parameters;
 
-class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
+use dlds\thepay\api\dataApi\TpDataApiObject;
+use dlds\thepay\api\dataApi\TpValueFormatter;
+use dlds\thepay\ThePay;
+
+class TpDataApiPayment extends TpDataApiObject
+{
 
     /**
      * @var int|null
@@ -130,6 +135,36 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
     public $customerEmail;
 
     /**
+     * @var string|null
+     */
+    protected $fik;
+
+    /**
+     * @var string|null
+     */
+    protected $bkp;
+
+    /**
+     * @var string|null
+     */
+    protected $pkp;
+
+    /**
+     * @var string|null
+     */
+    protected $receiptUrl;
+
+    /**
+     * @var bool|null
+     */
+    protected $firstSuccess;
+
+    public function isDone()
+    {
+        return $this->getState() == ThePay::PAYMENT_STATUS_DONE;
+    }
+
+    /**
      * @return int|null
      */
     public function getId()
@@ -142,7 +177,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setId($id = null)
     {
-        $this->id = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $id);
+        $this->id = TpValueFormatter::format('int', $id);
     }
 
     /**
@@ -158,7 +193,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setAccount($account = null)
     {
-        $this->account = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $account);
+        $this->account = TpValueFormatter::format('int', $account);
     }
 
     /**
@@ -174,7 +209,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setState($state = null)
     {
-        $this->state = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $state);
+        $this->state = TpValueFormatter::format('int', $state);
     }
 
     /**
@@ -190,7 +225,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setCreatedOn($createdOn = null)
     {
-        $this->createdOn = \dlds\thepay\api\dataApi\TpValueFormatter::format('DateTime', $createdOn);
+        $this->createdOn = TpValueFormatter::format('DateTime', $createdOn);
     }
 
     /**
@@ -206,7 +241,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setFinishedOn($finishedOn = null)
     {
-        $this->finishedOn = \dlds\thepay\api\dataApi\TpValueFormatter::format('DateTime', $finishedOn);
+        $this->finishedOn = TpValueFormatter::format('DateTime', $finishedOn);
     }
 
     /**
@@ -222,7 +257,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setCanceledOn($canceledOn = null)
     {
-        $this->canceledOn = \dlds\thepay\api\dataApi\TpValueFormatter::format('DateTime', $canceledOn);
+        $this->canceledOn = TpValueFormatter::format('DateTime', $canceledOn);
     }
 
     /**
@@ -238,7 +273,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setPayOff($payOff = null)
     {
-        $this->payOff = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $payOff);
+        $this->payOff = TpValueFormatter::format('int', $payOff);
     }
 
     /**
@@ -254,7 +289,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setPayOffCancel($payOffCancel = null)
     {
-        $this->payOffCancel = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $payOffCancel);
+        $this->payOffCancel = TpValueFormatter::format('int', $payOffCancel);
     }
 
     /**
@@ -270,7 +305,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setValue($value = null)
     {
-        $this->value = \dlds\thepay\api\dataApi\TpValueFormatter::format('float', $value);
+        $this->value = TpValueFormatter::format('float', $value);
     }
 
     /**
@@ -286,7 +321,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setReceivedValue($receivedValue = null)
     {
-        $this->receivedValue = \dlds\thepay\api\dataApi\TpValueFormatter::format('float', $receivedValue);
+        $this->receivedValue = TpValueFormatter::format('float', $receivedValue);
     }
 
     /**
@@ -302,7 +337,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setCurrency($currency)
     {
-        $this->currency = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $currency);
+        $this->currency = TpValueFormatter::format('int', $currency);
     }
 
     /**
@@ -318,7 +353,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setFee($fee)
     {
-        $this->fee = \dlds\thepay\api\dataApi\TpValueFormatter::format('float', $fee);
+        $this->fee = TpValueFormatter::format('float', $fee);
     }
 
     /**
@@ -334,7 +369,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setDescription($description = null)
     {
-        $this->description = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $description);
+        $this->description = TpValueFormatter::format('string', $description);
     }
 
     /**
@@ -350,7 +385,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setMerchantData($merchantData = null)
     {
-        $this->merchantData = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $merchantData);
+        $this->merchantData = TpValueFormatter::format('string', $merchantData);
     }
 
     /**
@@ -366,7 +401,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setPaymentMethod($paymentMethod)
     {
-        $this->paymentMethod = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $paymentMethod);
+        $this->paymentMethod = TpValueFormatter::format('int', $paymentMethod);
     }
 
     /**
@@ -382,7 +417,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setSpecificSymbol($specificSymbol = null)
     {
-        $this->specificSymbol = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $specificSymbol);
+        $this->specificSymbol = TpValueFormatter::format('string', $specificSymbol);
     }
 
     /**
@@ -398,8 +433,8 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setMerchantSpecificSymbol($merchantSpecificSymbol = null)
     {
-        $this->merchantSpecificSymbol = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $merchantSpecificSymbol
+        $this->merchantSpecificSymbol = TpValueFormatter::format(
+            'string', $merchantSpecificSymbol
         );
     }
 
@@ -416,8 +451,8 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setAccountNumber($accountNumber = null)
     {
-        $this->accountNumber = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $accountNumber
+        $this->accountNumber = TpValueFormatter::format(
+            'string', $accountNumber
         );
     }
 
@@ -434,8 +469,8 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setAccountOwnerName($accountOwnerName = null)
     {
-        $this->accountOwnerName = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $accountOwnerName
+        $this->accountOwnerName = TpValueFormatter::format(
+            'string', $accountOwnerName
         );
     }
 
@@ -452,7 +487,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setReturnUrl($returnUrl)
     {
-        $this->returnUrl = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $returnUrl);
+        $this->returnUrl = TpValueFormatter::format('string', $returnUrl);
     }
 
     /**
@@ -468,8 +503,8 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setPermanentPayment($permanentPayment = null)
     {
-        $this->permanentPayment = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'int', $permanentPayment
+        $this->permanentPayment = TpValueFormatter::format(
+            'int', $permanentPayment
         );
     }
 
@@ -486,7 +521,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setDeposit($deposit = null)
     {
-        $this->deposit = \dlds\thepay\api\dataApi\TpValueFormatter::format('bool', $deposit);
+        $this->deposit = TpValueFormatter::format('bool', $deposit);
     }
 
     /**
@@ -502,7 +537,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setRecurring($recurring = null)
     {
-        $this->recurring = \dlds\thepay\api\dataApi\TpValueFormatter::format('bool', $recurring);
+        $this->recurring = TpValueFormatter::format('bool', $recurring);
     }
 
     /**
@@ -518,7 +553,7 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setIp($ip = null)
     {
-        $this->ip = \dlds\thepay\api\dataApi\TpValueFormatter::format('string', $ip);
+        $this->ip = TpValueFormatter::format('string', $ip);
     }
 
     /**
@@ -534,8 +569,89 @@ class TpDataApiPayment extends \dlds\thepay\api\dataApi\TpDataApiObject {
      */
     public function setCustomerEmail($customerEmail = null)
     {
-        $this->customerEmail = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'string', $customerEmail
+        $this->customerEmail = TpValueFormatter::format(
+            'string', $customerEmail
         );
     }
+
+    /**
+     * @return string|null
+     */
+    public function getFik()
+    {
+        return $this->fik;
+    }
+
+    /**
+     * @param string|null $fik
+     */
+    public function setFik($fik = null)
+    {
+        $this->fik = TpValueFormatter::formatString($fik);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBkp()
+    {
+        return $this->bkp;
+    }
+
+    /**
+     * @param string|null $bkp
+     */
+    public function setBkp($bkp = null)
+    {
+        $this->bkp = TpValueFormatter::formatString($bkp);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPkp()
+    {
+        return $this->pkp;
+    }
+
+    /**
+     * @param string|null $pkp
+     */
+    public function setPkp($pkp = null)
+    {
+        $this->pkp = TpValueFormatter::formatString($pkp);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReceiptUrl()
+    {
+        return $this->receiptUrl;
+    }
+
+    /**
+     * @param string|null $receiptUrl
+     */
+    public function setReceiptUrl($receiptUrl = null)
+    {
+        $this->receiptUrl = TpValueFormatter::formatString($receiptUrl);
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getFirstSuccess()
+    {
+        return $this->firstSuccess;
+    }
+
+    /**
+     * @param bool|null $firstSuccess
+     */
+    public function setFirstSuccess($firstSuccess = null)
+    {
+        $this->firstSuccess = TpValueFormatter::formatBool($firstSuccess);
+    }
+
 }

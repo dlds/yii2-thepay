@@ -2,7 +2,13 @@
 
 namespace dlds\thepay\api\dataApi\requests;
 
-class TpDataApiGetPaymentsRequest extends TpDataApiRequest {
+use dlds\thepay\api\dataApi\parameters\TpDataApiGetPaymentsSearchParams;
+use dlds\thepay\api\dataApi\parameters\TpDataApiOrdering;
+use dlds\thepay\api\dataApi\parameters\TpDataApiPaginationRequest;
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiGetPaymentsRequest extends TpDataApiRequest
+{
 
     protected static $dateTimePaths = array(
         array('searchParams', 'createdOnFrom'),
@@ -37,10 +43,10 @@ class TpDataApiGetPaymentsRequest extends TpDataApiRequest {
     /**
      * @param TpDataApiGetPaymentsSearchParams|null $searchParams
      */
-    public function setSearchParams(\dlds\thepay\api\dataApi\parameters\TpDataApiGetPaymentsSearchParams $searchParams = null)
+    public function setSearchParams(TpDataApiGetPaymentsSearchParams $searchParams = null)
     {
-        $this->searchParams = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'TpDataApiGetPaymentsSearchParams', $searchParams
+        $this->searchParams = TpValueFormatter::format(
+            'TpDataApiGetPaymentsSearchParams', $searchParams
         );
     }
 
@@ -55,10 +61,10 @@ class TpDataApiGetPaymentsRequest extends TpDataApiRequest {
     /**
      * @param TpDataApiPaginationRequest|null $pagination
      */
-    public function setPagination(\dlds\thepay\api\dataApi\parameters\TpDataApiPaginationRequest $pagination = null)
+    public function setPagination(TpDataApiPaginationRequest $pagination = null)
     {
-        $this->pagination = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'TpDataApiPaginationRequest', $pagination
+        $this->pagination = TpValueFormatter::format(
+            'TpDataApiPaginationRequest', $pagination
         );
     }
 
@@ -73,10 +79,11 @@ class TpDataApiGetPaymentsRequest extends TpDataApiRequest {
     /**
      * @param TpDataApiOrdering|null $ordering
      */
-    public function setOrdering(\dlds\thepay\api\dataApi\parameters\TpDataApiOrdering $ordering = null)
+    public function setOrdering(TpDataApiOrdering $ordering = null)
     {
-        $this->ordering = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'TpDataApiOrdering', $ordering
+        $this->ordering = TpValueFormatter::format(
+            'TpDataApiOrdering', $ordering
         );
     }
+
 }

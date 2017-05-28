@@ -2,19 +2,25 @@
 
 namespace dlds\thepay\api\helpers;
 
+use dlds\thepay\api\exceptions\TpException;
+use dlds\thepay\api\TpPermanentPayment;
+use dlds\thepay\api\TpPermanentPaymentResponse;
+
 /**
  *
  * @author Michal Kandr
  */
-class TpPermanentPaymentHelper {
-
-    public static function createPermanentPayment(\dlds\thepay\api\TpPermanentPayment $payment)
+class TpPermanentPaymentHelper
+{
+    public static function createPermanentPayment(TpPermanentPayment $payment)
     {
         $config = $payment->getConfig();
         $client = new \SoapClient(
-            $config->webServicesWsdl, array('features' => SOAP_SINGLE_ELEMENT_ARRAYS)
+            $config->webServicesWsdl,
+            array('features' => SOAP_SINGLE_ELEMENT_ARRAYS)
         );
-        $result = $client->createPermanentPaymentRequest(array(
+
+        $result = $client->__soapCall('createPermanentPaymentRequest', array(
             'merchantId' => $config->merchantId,
             'accountId' => $config->accountId,
             'merchantData' => $payment->getMerchantData(),
@@ -22,29 +28,39 @@ class TpPermanentPaymentHelper {
             'returnUrl' => $payment->getReturnUrl(),
             'signature' => $payment->getSignature()
         ));
-        if (!$result)
-        {
-            throw new \dlds\thepay\api\exceptions\TpException();
+
+        if (!$result) {
+            throw new TpException();
         }
-        return new \dlds\thepay\api\TpPermanentPaymentResponse($result);
+
+        if (is_array($result)) {
+            $result = (object)$result;
+        }
+
+        return new TpPermanentPaymentResponse($result);
     }
 
-    public static function getPermanentPayment(\dlds\thepay\api\TpPermanentPayment $payment)
+    public static function getPermanentPayment(TpPermanentPayment $payment)
     {
         $config = $payment->getConfig();
         $client = new \SoapClient(
-            $config->webServicesWsdl, array('features' => SOAP_SINGLE_ELEMENT_ARRAYS)
+            $config->webServicesWsdl,
+            array('features' => SOAP_SINGLE_ELEMENT_ARRAYS)
         );
-        $result = $client->getPermanentPaymentRequest(array(
+        $result = $client->__soapCall('getPermanentPaymentRequest', array(
             'merchantId' => $config->merchantId,
             'accountId' => $config->accountId,
             'merchantData' => $payment->getMerchantData(),
             'signature' => $payment->getSignatureLite()
         ));
-        if (!$result)
-        {
-            throw new \dlds\thepay\api\exceptions\TpException();
+
+        if (!$result) {
+            throw new TpException();
         }
-        return new \dlds\thepay\api\TpPermanentPaymentResponse($result);
+        if (is_array($result)) {
+            $result = (object)$result;
+        }
+
+        return new TpPermanentPaymentResponse($result);
     }
 }

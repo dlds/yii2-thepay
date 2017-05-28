@@ -2,7 +2,17 @@
 
 namespace dlds\thepay\api\helpers;
 
-class TpDataApiHelper {
+use dlds\thepay\api\dataApi\parameters\TpDataApiGetPaymentsSearchParams;
+use dlds\thepay\api\dataApi\parameters\TpDataApiOrdering;
+use dlds\thepay\api\dataApi\parameters\TpDataApiPaginationRequest;
+use dlds\thepay\api\dataApi\requests\TpDataApiRequest;
+use dlds\thepay\api\dataApi\requests\TpDataApiRequestFactory;
+use dlds\thepay\api\dataApi\responses\TpDataApiResponseFactory;
+use dlds\thepay\api\exceptions\TpSoapException;
+use dlds\thepay\api\TpMerchantConfig;
+
+class TpDataApiHelper
+{
 
     /**
      * @param TpMerchantConfig $config
@@ -10,11 +20,11 @@ class TpDataApiHelper {
      * @return TpDataApiGetPaymentMethodsResponse
      * @throws TpSoapException
      */
-    public static function getPaymentMethods(\dlds\thepay\api\TpMerchantConfig $config, $onlyActive = null)
+    public static function getPaymentMethods(TpMerchantConfig $config, $onlyActive = null)
     {
         $data = array('onlyActive' => $onlyActive);
-        $request = \dlds\thepay\api\dataApi\requests\TpDataApiRequestFactory::getRequest(
-                __FUNCTION__, $config, $data
+        $request = TpDataApiRequestFactory::getRequest(
+            __FUNCTION__, $config, $data
         );
 
         $response = self::call(__FUNCTION__, $config, $request);
@@ -27,11 +37,11 @@ class TpDataApiHelper {
      * @return TpDataApiGetPaymentResponse
      * @throws TpSoapException
      */
-    public static function getPayment(\dlds\thepay\api\TpMerchantConfig $config, $paymentId)
+    public static function getPayment(TpMerchantConfig $config, $paymentId)
     {
         $data = array('paymentId' => $paymentId);
-        $request = \dlds\thepay\api\dataApi\requests\TpDataApiRequestFactory::getRequest(
-                __FUNCTION__, $config, $data
+        $request = TpDataApiRequestFactory::getRequest(
+            __FUNCTION__, $config, $data
         );
         $response = self::call(__FUNCTION__, $config, $request);
         return $response;
@@ -43,11 +53,11 @@ class TpDataApiHelper {
      * @return TpDataApiGetPaymentInstructionsResponse
      * @throws TpSoapException
      */
-    public static function getPaymentInstructions(\dlds\thepay\api\TpMerchantConfig $config, $paymentId)
+    public static function getPaymentInstructions(TpMerchantConfig $config, $paymentId)
     {
         $data = array('paymentId' => $paymentId);
-        $request = \dlds\thepay\api\dataApi\requests\TpDataApiRequestFactory::getRequest(
-                __FUNCTION__, $config, $data
+        $request = TpDataApiRequestFactory::getRequest(
+            __FUNCTION__, $config, $data
         );
         $response = self::call(__FUNCTION__, $config, $request);
         return $response;
@@ -59,11 +69,11 @@ class TpDataApiHelper {
      * @return TpDataApiGetPaymentStateResponse
      * @throws TpSoapException
      */
-    public static function getPaymentState(\dlds\thepay\api\TpMerchantConfig $config, $paymentId)
+    public static function getPaymentState(TpMerchantConfig $config, $paymentId)
     {
         $data = array('paymentId' => $paymentId);
-        $request = \dlds\thepay\api\dataApi\requests\TpDataApiRequestFactory::getRequest(
-                __FUNCTION__, $config, $data
+        $request = TpDataApiRequestFactory::getRequest(
+            __FUNCTION__, $config, $data
         );
         $response = self::call(__FUNCTION__, $config, $request);
         return $response;
@@ -77,15 +87,15 @@ class TpDataApiHelper {
      * @return TpDataApiGetPaymentsResponse
      * @throws TpSoapException
      */
-    public static function getPayments(\dlds\thepay\api\TpMerchantConfig $config, \dlds\thepay\api\dataApi\parameters\TpDataApiGetPaymentsSearchParams $searchParams = null, \dlds\thepay\api\dataApi\parameters\TpDataApiPaginationRequest $pagination = null, \dlds\thepay\api\dataApi\parameters\TpDataApiOrdering $ordering = null)
+    public static function getPayments(TpMerchantConfig $config, TpDataApiGetPaymentsSearchParams $searchParams = null, TpDataApiPaginationRequest $pagination = null, TpDataApiOrdering $ordering = null)
     {
         $data = array(
             'searchParams' => $searchParams,
             'pagination' => $pagination,
             'ordering' => $ordering
         );
-        $request = \dlds\thepay\api\dataApi\requests\TpDataApiRequestFactory::getRequest(
-                __FUNCTION__, $config, $data
+        $request = TpDataApiRequestFactory::getRequest(
+            __FUNCTION__, $config, $data
         );
         $response = self::call(__FUNCTION__, $config, $request);
         return $response;
@@ -98,23 +108,21 @@ class TpDataApiHelper {
      * @return TpDataApiResponse
      * @throws TpSoapException
      */
-    protected static function call($operation, \dlds\thepay\api\TpMerchantConfig $config, \dlds\thepay\api\dataApi\requests\TpDataApiRequest $request)
+    protected static function call($operation, TpMerchantConfig $config, TpDataApiRequest $request)
     {
-        try
-        {
+        try {
             $options = array('features' => SOAP_SINGLE_ELEMENT_ARRAYS);
             $client = new \SoapClient($config->dataWebServicesWsdl, $options);
             $signed = $request->toSignedSoapRequestArray();
             $rawResponse = $client->$operation($signed);
-        }
-        catch (\SoapFault $e)
-        {
-            throw new \dlds\thepay\api\exceptions\TpSoapException($e->getMessage());
+        } catch (\SoapFault $e) {
+            throw new TpSoapException($e->getMessage());
         }
 
-        $response = \dlds\thepay\api\dataApi\responses\TpDataApiResponseFactory::getResponse(
-                $operation, $config, $rawResponse
+        $response = TpDataApiResponseFactory::getResponse(
+            $operation, $config, $rawResponse
         );
         return $response;
     }
+
 }

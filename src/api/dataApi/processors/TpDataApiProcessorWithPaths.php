@@ -2,7 +2,8 @@
 
 namespace dlds\thepay\api\dataApi\processors;
 
-abstract class TpDataApiProcessorWithPaths extends TpDataApiProcessor {
+abstract class TpDataApiProcessorWithPaths extends TpDataApiProcessor
+{
 
     /**
      * @var array[]
@@ -40,4 +41,5 @@ abstract class TpDataApiProcessorWithPaths extends TpDataApiProcessor {
         $onPath = in_array($itemPath, $this->paths, true /* strict */);
         return $onPath;
     }
+
 }

@@ -2,7 +2,11 @@
 
 namespace dlds\thepay\api\dataApi\responses;
 
-class TpDataApiGetPaymentInstructionsResponse extends TpDataApiResponse {
+use dlds\thepay\api\dataApi\parameters\TpDataApiPaymentInfo;
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiGetPaymentInstructionsResponse extends TpDataApiResponse
+{
 
     /**
      * @var TpDataApiPaymentInfo|null
@@ -18,7 +22,7 @@ class TpDataApiGetPaymentInstructionsResponse extends TpDataApiResponse {
         /** @var TpDataApiGetPaymentInstructionsResponse $instance */
         $instance = parent::createFromResponse($response);
 
-        $paymentInfo = new \dlds\thepay\api\dataApi\parameters\TpDataApiPaymentInfo($response['paymentInfo']);
+        $paymentInfo = new TpDataApiPaymentInfo($response['paymentInfo']);
         $instance->setPaymentInfo($paymentInfo);
 
         return $instance;
@@ -35,10 +39,11 @@ class TpDataApiGetPaymentInstructionsResponse extends TpDataApiResponse {
     /**
      * @param TpDataApiPaymentInfo|null $paymentInfo
      */
-    public function setPaymentInfo(\dlds\thepay\api\dataApi\parameters\TpDataApiPaymentInfo $paymentInfo = null)
+    public function setPaymentInfo(TpDataApiPaymentInfo $paymentInfo = null)
     {
-        $this->paymentInfo = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'TpDataApiPaymentInfo', $paymentInfo
+        $this->paymentInfo = TpValueFormatter::format(
+            'TpDataApiPaymentInfo', $paymentInfo
         );
     }
+
 }

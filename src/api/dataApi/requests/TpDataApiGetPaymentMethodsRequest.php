@@ -2,7 +2,10 @@
 
 namespace dlds\thepay\api\dataApi\requests;
 
-class TpDataApiGetPaymentMethodsRequest extends TpDataApiRequest {
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiGetPaymentMethodsRequest extends TpDataApiRequest
+{
 
     /**
      * @var bool|null
@@ -22,7 +25,7 @@ class TpDataApiGetPaymentMethodsRequest extends TpDataApiRequest {
      */
     public function setOnlyActive($onlyActive = null)
     {
-        $this->onlyActive = \dlds\thepay\api\dataApi\TpValueFormatter::format('bool', $onlyActive);
+        $this->onlyActive = TpValueFormatter::format('bool', $onlyActive);
     }
 
     /**
@@ -34,4 +37,5 @@ class TpDataApiGetPaymentMethodsRequest extends TpDataApiRequest {
         $configArray['accountId'] = $this->_config->accountId;
         return $configArray;
     }
+
 }

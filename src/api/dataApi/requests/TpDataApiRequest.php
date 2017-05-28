@@ -2,12 +2,20 @@
 
 namespace dlds\thepay\api\dataApi\requests;
 
-abstract class TpDataApiRequest extends \dlds\thepay\api\dataApi\TpDataApiObject {
+use dlds\thepay\api\dataApi\parameters\TpDataApiSignature;
+use dlds\thepay\api\dataApi\processors\TpDataApiDateTimeDeflater;
+use dlds\thepay\api\dataApi\TpDataApiObject;
+use dlds\thepay\api\exceptions\TpBadMethodCallException;
+use dlds\thepay\api\TpMerchantConfig;
+
+abstract class TpDataApiRequest extends TpDataApiObject
+{
 
     /**
      * @var TpMerchantConfig|null
      */
     protected $_config;
+
     protected static $dateTimePaths = array();
 
     /**
@@ -19,7 +27,7 @@ abstract class TpDataApiRequest extends \dlds\thepay\api\dataApi\TpDataApiObject
      * @param array $data
      * @return TpDataApiRequest
      */
-    public static function createWithConfig(\dlds\thepay\api\TpMerchantConfig $config, $data = array())
+    public static function createWithConfig(TpMerchantConfig $config, $data = array())
     {
         $instance = new static($data);
         $instance->_config = $config;
@@ -40,8 +48,8 @@ abstract class TpDataApiRequest extends \dlds\thepay\api\dataApi\TpDataApiObject
         $data = parent::toArray();
         $withConfig = array_merge($configArray, $data);
 
-        $deflated = \dlds\thepay\api\dataApi\processors\TpDataApiDateTimeDeflater::processWithPaths(
-                $withConfig, static::$dateTimePaths
+        $deflated = TpDataApiDateTimeDeflater::processWithPaths(
+            $withConfig, static::$dateTimePaths
         );
 
         return $deflated;
@@ -56,8 +64,8 @@ abstract class TpDataApiRequest extends \dlds\thepay\api\dataApi\TpDataApiObject
         $this->assertConfig();
 
         $array = $this->toSoapRequestArray();
-        $signature = \dlds\thepay\api\dataApi\parameters\TpDataApiSignature::compute(
-                $array, $this->_config->dataApiPassword
+        $signature = TpDataApiSignature::compute(
+            $array, $this->_config->dataApiPassword
         );
         $signatureArray = array('signature' => $signature);
 
@@ -81,10 +89,10 @@ abstract class TpDataApiRequest extends \dlds\thepay\api\dataApi\TpDataApiObject
      */
     protected function assertConfig()
     {
-        if (!$this->_config)
-        {
+        if (!$this->_config) {
             $message = 'TpDataApiRequest instantiated without providing TpMerchantConfig. Use TpDataApiRequest::createWithConfig method instead of new TpDataApiRequest constructor.';
-            throw new \dlds\thepay\api\exceptions\TpBadMethodCallException($message);
+            throw new TpBadMethodCallException($message);
         }
     }
+
 }

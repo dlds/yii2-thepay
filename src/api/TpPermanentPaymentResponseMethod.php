@@ -2,8 +2,8 @@
 
 namespace dlds\thepay\api;
 
-class TpPermanentPaymentResponseMethod {
-
+class TpPermanentPaymentResponseMethod
+{
     protected $methodId;
     protected $methodName;
     protected $url;
@@ -43,4 +43,45 @@ class TpPermanentPaymentResponseMethod {
     {
         $this->vs = $vs;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getMethodId()
+    {
+        return $this->methodId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMethodName()
+    {
+        return $this->methodName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccountNumber()
+    {
+        return $this->accountNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVs()
+    {
+        return $this->vs;
+    }
+
 }

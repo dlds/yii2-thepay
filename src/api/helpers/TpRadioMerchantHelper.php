@@ -2,12 +2,17 @@
 
 namespace dlds\thepay\api\helpers;
 
+use dlds\thepay\api\exceptions\TpException;
+use dlds\thepay\api\TpEscaper;
+use dlds\thepay\api\TpMerchantConfig;
+use dlds\thepay\api\TpPayment;
+
 /**
  * Helper for payment component with radio buttons method selection.
  * @author Michal Kandr
  */
-class TpRadioMerchantHelper {
-
+class TpRadioMerchantHelper
+{
     /**
      * @var TpMerchantConfig merchant configuration
      */
@@ -32,7 +37,7 @@ class TpRadioMerchantHelper {
      * @param boolean $disablePopupCss disable default CSS styling for popup div with payment instructions
      * @param string $currency payment's currency. Null for default currency
      */
-    public function __construct(\dlds\thepay\api\TpMerchantConfig $config, $name = null, $value = null, $showIcon = true, $disablePopupCss = false, $currency = null)
+    function __construct(TpMerchantConfig $config, $name = null, $value = null, $showIcon = true, $disablePopupCss = false, $currency = null)
     {
         $this->config = $config;
         $this->name = $name;
@@ -53,7 +58,7 @@ class TpRadioMerchantHelper {
     /**
      * @param TpMerchantConfig $config merchant configuration
      */
-    public function setConfig(\dlds\thepay\api\TpMerchantConfig $config)
+    public function setConfig(TpMerchantConfig $config)
     {
         $this->config = $config;
     }
@@ -153,35 +158,33 @@ class TpRadioMerchantHelper {
             'name' => $this->name,
             'value' => $this->value,
             'showIcon' => $this->showIcon,
-            'selected' => !empty($_REQUEST['tp_radio_value']) ? (int) $_REQUEST['tp_radio_value'] : '',
+            'selected' => !empty($_REQUEST['tp_radio_value']) ? (int)$_REQUEST['tp_radio_value'] : '',
         );
         // Currency is an optional argument. For compatibility reasons, it is
         // not present in the query at all if its value is empty.
-        if ($this->currency)
-        {
+        if ($this->currency) {
             $queryArgs['currency'] = $this->currency;
         }
         $queryArgs['signature'] = $this->createSignature($queryArgs);
 
         $queryArgs = http_build_query($queryArgs);
         $thepayGateUrl = "{$gateUrl}radiobuttons/index.php?$queryArgs";
-        $thepayGateUrl = \dlds\thepay\api\TpEscaper::jsonEncode($thepayGateUrl);
+        $thepayGateUrl = TpEscaper::jsonEncode($thepayGateUrl);
 
-        $href = "{$gateUrl}radiobuttons/style/radiobuttons.css?v=".time();
+        $href = "{$gateUrl}radiobuttons/style/radiobuttons.css?v=" . time();
         $out = "<link href=\"$href\" type=\"text/css\" rel=\"stylesheet\" />\n";
         $out .= "<script type=\"text/javascript\">\n";
         $out .= "\tvar thepayGateUrl = $thepayGateUrl;\n";
-        if ($this->appendCode)
-        {
-            $thepayAppendCode = \dlds\thepay\api\TpEscaper::jsonEncode($this->appendCode);
+        if ($this->appendCode) {
+            $thepayAppendCode = TpEscaper::jsonEncode($this->appendCode);
             $out .= "\tvar thepayAppendCode = $thepayAppendCode;\n";
         }
         $out .= "</script>\n";
 
-        $src = "{$gateUrl}radiobuttons/js/jquery.js?v=".time();
+        $src = "{$gateUrl}radiobuttons/js/jquery.js?v=" . time();
         $out .= "<script type=\"text/javascript\" src=\"$src\" async=\"async\"></script>\n";
 
-        $src = "{$gateUrl}radiobuttons/js/radiobuttons.js?v=".time();
+        $src = "{$gateUrl}radiobuttons/js/radiobuttons.js?v=" . time();
         $out .= "<script type=\"text/javascript\" src=\"$src\" async=\"async\"></script>\n";
 
         $out .= "<div id=\"thepay-method-box\"></div>\n";
@@ -211,52 +214,42 @@ class TpRadioMerchantHelper {
      * @param integer $forcedValue allowes you to explicitly set selected payment method id (when you need it to by set differently then from request variable)
      * @throws TpException if headers was already sent
      */
-    public function redirectOnlinePayment(\dlds\thepay\api\TpPayment $payment, $redirectFunc = null, $dieAfterRedirect = false, $forcedValue = null)
+    public function redirectOnlinePayment(TpPayment $payment, $redirectFunc = null, $dieAfterRedirect = false, $forcedValue = null)
     {
-        if ((!empty($_REQUEST['tp_radio_value']) || $forcedValue > 0) && empty($_REQUEST['tp_radio_is_offline']))
-        {
-            if (headers_sent())
-            {
-                throw new \dlds\thepay\api\exceptions\TpException('Redirect error - headers have been already sent');
+        if ((!empty($_REQUEST['tp_radio_value']) || $forcedValue > 0) && empty($_REQUEST['tp_radio_is_offline'])) {
+            if (headers_sent()) {
+                throw new TpException('Redirect error - headers have been already sent');
             }
             $this->clearCookies();
 
             // Output buffer must be empty for the redirect to be successful.
             $obCleaned = false;
-            while (ob_get_level())
-            {
+            while (ob_get_level()) {
                 ob_end_clean();
                 $obCleaned = true;
             }
-            if ($obCleaned)
-            {
+            if ($obCleaned) {
                 // If the output buffer was being used, start buffering again.
                 // Makes function’s behavior more consistent and predictable.
                 ob_start();
             }
 
-            $payment->setMethodId((int) (isset($_REQUEST['tp_radio_value']) ? $_REQUEST['tp_radio_value'] : $forcedValue));
+            $payment->setMethodId((int)(isset($_REQUEST['tp_radio_value']) ? $_REQUEST['tp_radio_value'] : $forcedValue));
             $queryArgs = $payment->getArgs();
             $queryArgs['signature'] = $payment->getSignature();
-            $url = $this->config->gateUrl.'?'.http_build_query($queryArgs);
+            $url = $this->config->gateUrl . '?' . http_build_query($queryArgs);
 
-            if ($redirectFunc && is_callable($redirectFunc))
-            {
+            if ($redirectFunc && is_callable($redirectFunc)) {
                 $returnedValue = call_user_func($redirectFunc, $url);
-            }
-            else
-            {
-                header('Location:'.$url);
+            } else {
+                header('Location:' . $url);
                 $returnedValue = true;
             }
-        }
-        else
-        {
+        } else {
             $returnedValue = false;
         }
 
-        if ($returnedValue && $dieAfterRedirect)
-        {
+        if ($returnedValue && $dieAfterRedirect) {
             die;
         }
 
@@ -266,7 +259,7 @@ class TpRadioMerchantHelper {
     /**
      * @deprecated
      */
-    public function redirectOfflinePayment(\dlds\thepay\api\TpPayment $payment, $redirecFunc = null)
+    public function redirectOfflinePayment(TpPayment $payment, $redirecFunc = null)
     {
         $this->redirectOnlinePayment($payment, $redirecFunc);
     }
@@ -278,17 +271,16 @@ class TpRadioMerchantHelper {
      * @param TpPayment $payment
      * @return string HTML code with component
      */
-    public function showPaymentInstructions(\dlds\thepay\api\TpPayment $payment)
+    public function showPaymentInstructions(TpPayment $payment)
     {
-        if (empty($_REQUEST['tp_radio_value']) || empty($_REQUEST['tp_radio_is_offline']))
-        {
+        if (empty($_REQUEST['tp_radio_value']) || empty($_REQUEST['tp_radio_is_offline'])) {
             return '';
         }
 
         $this->clearCookies();
 
-        $href = "{$this->config->gateUrl}radiobuttons/style/radiobuttons.css?v=".time();
-        $href = \dlds\thepay\api\TpEscaper::htmlEntityEncode($href);
+        $href = "{$this->config->gateUrl}radiobuttons/style/radiobuttons.css?v=" . time();
+        $href = TpEscaper::htmlEntityEncode($href);
         $out = "<link href=\"$href\" type=\"text/css\" rel=\"stylesheet\" />\n";
 
         $out .= "<script type=\"text/javascript\">\n";
@@ -296,21 +288,21 @@ class TpRadioMerchantHelper {
         $payment->setMethodId(intval($_REQUEST['tp_radio_value']));
         $queryArgs = $payment->getArgs();
         $queryArgs['signature'] = $payment->getSignature();
-        $thepayGateUrl = "{$this->config->gateUrl}?".http_build_query($queryArgs);
-        $thepayGateUrl = \dlds\thepay\api\TpEscaper::jsonEncode($thepayGateUrl);
+        $thepayGateUrl = "{$this->config->gateUrl}?" . http_build_query($queryArgs);
+        $thepayGateUrl = TpEscaper::jsonEncode($thepayGateUrl);
         $out .= "\tvar thepayGateUrl = $thepayGateUrl,\n";
 
-        $thepayDisablePopupCss = \dlds\thepay\api\TpEscaper::jsonEncode($this->disablePopupCss);
+        $thepayDisablePopupCss = TpEscaper::jsonEncode($this->disablePopupCss);
         $out .= "\tthepayDisablePopupCss = $thepayDisablePopupCss;\n";
 
         $out .= "</script>\n";
 
-        $src = "{$this->config->gateUrl}radiobuttons/js/jquery.js?v=".time();
-        $src = \dlds\thepay\api\TpEscaper::htmlEntityEncode($src);
+        $src = "{$this->config->gateUrl}radiobuttons/js/jquery.js?v=" . time();
+        $src = TpEscaper::htmlEntityEncode($src);
         $out .= "<script type=\"text/javascript\" src=\"$src\" async=\"async\"></script>";
 
-        $src = "{$this->config->gateUrl}radiobuttons/js/radiobuttons.js?v=".time();
-        $src = \dlds\thepay\api\TpEscaper::htmlEntityEncode($src);
+        $src = "{$this->config->gateUrl}radiobuttons/js/radiobuttons.js?v=" . time();
+        $src = TpEscaper::htmlEntityEncode($src);
         $out .= "<script type=\"text/javascript\" src=\"$src\" async=\"async\"></script>";
 
         $out .= "<div id=\"thepay-method-result\"></div>";

@@ -8,6 +8,7 @@
 
 namespace dlds\thepay\handlers;
 
+use dlds\thepay\api\TpPermanentPayment;
 use dlds\thepay\handlers\ThePayGatewayHandler;
 use dlds\thepay\interfaces\ThePayPaymentInterface;
 use dlds\thepay\interfaces\ThePayPaymentSourceInterface;
@@ -70,6 +71,15 @@ class ThePayApiHandler
     }
 
     /**
+     * Retrieves api config
+     * @return \dlds\thepay\api\TpMerchantConfig
+     */
+    public function getApiConfig()
+    {
+        return $this->apiConfig;
+    }
+
+    /**
      * Retrieves payment url
      */
     public function getUrl(ThePayPaymentSourceInterface $source, $returnUrl = false)
@@ -80,12 +90,32 @@ class ThePayApiHandler
         $tpp->setMerchantData($source->getSourceId());
         $tpp->setMethodId($source->getSourcePaymentType());
         $tpp->setCustomerEmail($source->getSourceCustomerEmail());
+        $tpp->setIsRecurring($source->getSourceIsRecurring());
+        $tpp->setDeposit($source->getSourceIsDeposit());
 
         if ($returnUrl) {
             $tpp->setReturnUrl($returnUrl);
         }
 
         return ThePayGatewayHandler::getUrl($this->apiConfig, ThePayGatewayHandler::buildPaymentQuery($tpp));
+    }
+
+    /**
+     * Retrieves payment url
+     */
+    public function getPermanentPayment(ThePayPaymentSourceInterface $source, $returnUrl = false)
+    {
+        $tpp = new TpPermanentPayment($this->apiConfig);
+        //$tpp->setValue($source->getSourceAmount());
+        $tpp->setDescription($source->getSourceDesc());
+        $tpp->setMerchantData($source->getSourceId());
+        //$tpp->setCustomerEmail($source->getSourceCustomerEmail());
+
+        if ($returnUrl) {
+            $tpp->setReturnUrl($returnUrl);
+        }
+
+        return $tpp;
     }
 
     /**
@@ -181,7 +211,7 @@ class ThePayApiHandler
     public function getPaymentStatus($pid)
     {
         try {
-            $res = TpDataApiHelper::getPaymentState($this->apiConfig, (int) $pid);
+            $res = TpDataApiHelper::getPaymentState($this->apiConfig, (int)$pid);
 
             if ($res instanceof \dlds\thepay\api\dataApi\responses\TpDataApiGetPaymentStateResponse) {
                 return $res->getState();

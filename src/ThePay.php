@@ -8,6 +8,9 @@
 
 namespace dlds\thepay;
 
+use dlds\thepay\api\helpers\TpCardHelper;
+use dlds\thepay\api\helpers\TpPermanentPaymentHelper;
+
 /**
  * This is the main class of the dlds\thepay component
  * that should be registered as an application component.
@@ -84,6 +87,8 @@ class ThePay extends \yii\base\Component
      */
     public function init()
     {
+        ini_set("soap.wsdl_cache_enabled", "0");
+
         if (!$this->merchantId) {
             throw new \yii\base\Exception('Parameter "merchantId" is not set');
         }
@@ -107,6 +112,26 @@ class ThePay extends \yii\base\Component
     public function createPayment(interfaces\ThePayPaymentSourceInterface $source, interfaces\ThePayPaymentInterface $template)
     {
         return handlers\ThePayPaymentHandler::createFromSource($source, $template);
+    }
+
+    /**
+     * Creates new payment order through PayU API
+     */
+    public function makeRecurringPayment(interfaces\ThePayPaymentSourceInterface $newSource, interfaces\ThePayPaymentSourceInterface $oldSource)
+    {
+        $config = $this->getApiHandler()->getApiConfig();
+
+        return TpCardHelper::createNewRecurrentPayment($config, $oldSource->getSourceId(), $newSource->getSourceId(), $newSource->getSourceAmount());
+    }
+
+    /**
+     * Creates new payment order through PayU API
+     */
+    public function makePermanentPayment(interfaces\ThePayPaymentSourceInterface $source, $returnUrl = false)
+    {
+        $config = $this->getApiHandler()->getApiConfig();
+
+        return TpPermanentPaymentHelper::createPermanentPayment($this->getApiHandler()->getPermanentPayment($source, $returnUrl));
     }
 
     /**

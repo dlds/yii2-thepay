@@ -2,7 +2,10 @@
 
 namespace dlds\thepay\api\dataApi\processors;
 
-abstract class TpDataApiProcessor {
+use dlds\thepay\api\TpUtils;
+
+abstract class TpDataApiProcessor
+{
 
     /**
      * @param array $input
@@ -24,8 +27,7 @@ abstract class TpDataApiProcessor {
     protected function processHash(array $value, array $currentPath)
     {
         $processed = array();
-        foreach ($value as $key => $item)
-        {
+        foreach ($value as $key => $item) {
             // Every level deeper appends the currenty key to the path.
             $itemPath = array_merge($currentPath, array($key));
             $processed[$key] = $this->processItem($item, $itemPath);
@@ -41,23 +43,18 @@ abstract class TpDataApiProcessor {
      */
     protected function processItem($value, array $currentPath)
     {
-        if (is_array($value) || is_object($value))
-        {
-            $value = (array) $value;
+        if (is_object($value)) {
+            $value = (array)$value;
+        }
 
-            $isList = \dlds\thepay\api\TpUtils::isList($value);
-
-            if ($isList)
-            {
+        if (is_array($value)) {
+            $isList = TpUtils::isList($value);
+            if ($isList) {
                 $processed = $this->processList($value, $currentPath);
-            }
-            else
-            {
+            } else {
                 $processed = $this->processHash($value, $currentPath);
             }
-        }
-        else
-        {
+        } else {
             // Only arrays are treated specially.
             $processed = $value;
         }
@@ -76,12 +73,12 @@ abstract class TpDataApiProcessor {
     protected function processList(array $list, array $currentPath)
     {
         $processed = array();
-        foreach ($list as $key => $value)
-        {
+        foreach ($list as $key => $value) {
             // Numeric list keys are not appended to the path.
             $processed[$key] = $this->processItem($value, $currentPath);
         }
         unset($key, $value);
         return $processed;
     }
+
 }

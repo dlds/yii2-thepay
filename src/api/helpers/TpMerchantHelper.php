@@ -2,11 +2,13 @@
 
 namespace dlds\thepay\api\helpers;
 
+use dlds\thepay\api\TpPayment;
+
 /**
  * Base class for various ThePay Merchant components.
  */
-abstract class TpMerchantHelper {
-
+abstract class TpMerchantHelper
+{
     /**
      * Payment that should be rendered using the helper. Specify the
      * payment as parameter to the helper constructor.
@@ -19,7 +21,7 @@ abstract class TpMerchantHelper {
      * @param payment Instace of the TpPayment method, that contains
      *   inforamtion about the payment to be made.
      */
-    public function __construct(\dlds\thepay\api\TpPayment $payment)
+    function __construct(TpPayment $payment)
     {
         $this->payment = $payment;
     }
@@ -34,12 +36,12 @@ abstract class TpMerchantHelper {
     /**
      * Build the query part of the URL from payment data and optional
      * helper data.
-     * @param args Associative array of optional arguments that should
+     * @param array $args Associative array of optional arguments that should
      *   be appended to the URL.
-     * @return Query part of the URL with all parameters correctly escaped
+     * @return string Query part of the URL with all parameters correctly escaped
      *
      */
-    public function buildQuery($args = array())
+    function buildQuery($args = array())
     {
         $out = array_merge(
             $this->payment->getArgs(), // Arguments of the payment
@@ -48,11 +50,10 @@ abstract class TpMerchantHelper {
         );
 
         $str = array();
-        foreach ($out as $key => $val)
-        {
-            $str[] = rawurlencode($key)."=".rawurlencode($val);
+        foreach ($out as $key => $val) {
+            $str[] = rawurlencode($key) . "=" . rawurlencode($val);
         }
 
-        return implode("&amp;", $str);
+        return implode('&', $str);
     }
 }

@@ -2,7 +2,11 @@
 
 namespace dlds\thepay\api\dataApi;
 
-class TpValueFormatter {
+use dlds\thepay\api\exceptions\TpInvalidArgumentException;
+use yii\helpers\StringHelper;
+
+class TpValueFormatter
+{
 
     /**
      * @param string $type
@@ -12,34 +16,28 @@ class TpValueFormatter {
      */
     public static function format($type, $value)
     {
-        if (substr($type, -2) == '[]')
-        {
+        if (substr($type, -2) == '[]') {
             return static::formatList(substr($type, 0, -2), $value);
         }
 
         $isNull = is_null($value);
-        if ($isNull)
-        {
+        if ($isNull) {
             return null;
-        }
-        else
-        {
+        } else {
             $method = "format$type"; // Method names are case-insensitive.
-            if (method_exists(__CLASS__, $method))
-            {
+            if (method_exists(__CLASS__, $method)) {
                 return static::$method($value);
             }
 
             // temporary fix
-            $basename = \yii\helpers\StringHelper::basename(get_class($value));
+            $basename = StringHelper::basename(get_class($value));
 
-            if ($basename == $type)
-            {
+            if ($basename == $type) {
                 return $value;
             }
 
-            $message = 'Unknown type '.$type.'.';
-            throw new \dlds\thepay\api\exceptions\TpInvalidArgumentException($message);
+            $message = 'Unknown type ' . $type . '.';
+            throw new TpInvalidArgumentException($message);
         }
     }
 
@@ -50,13 +48,10 @@ class TpValueFormatter {
     public static function formatInt($value)
     {
         $isNull = is_null($value);
-        if ($isNull)
-        {
+        if ($isNull) {
             return null;
-        }
-        else
-        {
-            return (int) $value;
+        } else {
+            return (int)$value;
         }
     }
 
@@ -67,13 +62,10 @@ class TpValueFormatter {
     public static function formatFloat($value)
     {
         $isNull = is_null($value);
-        if ($isNull)
-        {
+        if ($isNull) {
             return null;
-        }
-        else
-        {
-            return (float) $value;
+        } else {
+            return (float)$value;
         }
     }
 
@@ -84,13 +76,10 @@ class TpValueFormatter {
     public static function formatBool($value)
     {
         $isNull = is_null($value);
-        if ($isNull)
-        {
+        if ($isNull) {
             return null;
-        }
-        else
-        {
-            return (bool) $value;
+        } else {
+            return (bool)$value;
         }
     }
 
@@ -101,12 +90,9 @@ class TpValueFormatter {
     public static function formatString($value)
     {
         $isNull = is_null($value);
-        if ($isNull)
-        {
+        if ($isNull) {
             return null;
-        }
-        else
-        {
+        } else {
             return "$value";
         }
     }
@@ -118,22 +104,14 @@ class TpValueFormatter {
     public static function formatDateTime($value)
     {
         $isNull = is_null($value);
-        if ($isNull)
-        {
+        if ($isNull) {
             return null;
-        }
-        else
-        {
-            if ($value == "0000-00-00 00:00:00")
-            {
+        } else {
+            if ($value == "0000-00-00 00:00:00") {
                 return null;
-            }
-            elseif ($value instanceof \DateTime)
-            {
+            } elseif ($value instanceof \DateTime) {
                 return $value;
-            }
-            else
-            {
+            } else {
                 return new \DateTime($value);
             }
         }
@@ -147,10 +125,10 @@ class TpValueFormatter {
     public static function formatList($type, array $value)
     {
         $array = array();
-        foreach ($value as $item)
-        {
+        foreach ($value as $item) {
             $array[] = TpValueFormatter::format($type, $item);
         }
         return $array;
     }
+
 }

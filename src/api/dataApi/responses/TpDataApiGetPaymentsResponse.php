@@ -2,11 +2,17 @@
 
 namespace dlds\thepay\api\dataApi\responses;
 
-class TpDataApiGetPaymentsResponse extends TpDataApiResponse {
+use dlds\thepay\api\dataApi\parameters\TpDataApiPaginationResponse;
+use dlds\thepay\api\dataApi\parameters\TpDataApiPayment;
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiGetPaymentsResponse extends TpDataApiResponse
+{
 
     protected static $listPaths = array(
         array('payments', 'payment')
     );
+
     protected static $dateTimePaths = array(
         array('payments', 'createdOn'),
         array('payments', 'finishedOn'),
@@ -33,14 +39,13 @@ class TpDataApiGetPaymentsResponse extends TpDataApiResponse {
         $instance = parent::createFromResponse($response);
 
         $payments = array();
-        foreach ($response['payments'] as $payment)
-        {
-            $payments[] = new \dlds\thepay\api\dataApi\parameters\TpDataApiPayment($payment);
+        foreach ($response['payments'] as $payment) {
+            $payments[] = new TpDataApiPayment($payment);
         }
         unset($payment);
         $instance->setPayments($payments);
 
-        $pagination = new \dlds\thepay\api\dataApi\parameters\TpDataApiPaginationResponse($response['pagination']);
+        $pagination = new TpDataApiPaginationResponse($response['pagination']);
         $instance->setPagination($pagination);
 
         return $instance;
@@ -59,8 +64,8 @@ class TpDataApiGetPaymentsResponse extends TpDataApiResponse {
      */
     public function setPayments(array $payments = array())
     {
-        $this->payments = \dlds\thepay\api\dataApi\TpValueFormatter::formatList(
-                'TpDataApiPayment', $payments
+        $this->payments = TpValueFormatter::formatList(
+            'TpDataApiPayment', $payments
         );
     }
 
@@ -75,10 +80,11 @@ class TpDataApiGetPaymentsResponse extends TpDataApiResponse {
     /**
      * @param TpDataApiPaginationResponse|null $pagination
      */
-    public function setPagination(\dlds\thepay\api\dataApi\parameters\TpDataApiPaginationResponse $pagination)
+    public function setPagination(TpDataApiPaginationResponse $pagination)
     {
-        $this->pagination = \dlds\thepay\api\dataApi\TpValueFormatter::format(
-                'TpDataApiPaginationResponse', $pagination
+        $this->pagination = TpValueFormatter::format(
+            'TpDataApiPaginationResponse', $pagination
         );
     }
+
 }

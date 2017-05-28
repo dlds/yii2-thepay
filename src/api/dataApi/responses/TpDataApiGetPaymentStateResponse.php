@@ -2,7 +2,10 @@
 
 namespace dlds\thepay\api\dataApi\responses;
 
-class TpDataApiGetPaymentStateResponse extends TpDataApiResponse {
+use dlds\thepay\api\dataApi\TpValueFormatter;
+
+class TpDataApiGetPaymentStateResponse extends TpDataApiResponse
+{
 
     /**
      * @var int|null
@@ -34,6 +37,7 @@ class TpDataApiGetPaymentStateResponse extends TpDataApiResponse {
      */
     public function setState($state = null)
     {
-        $this->state = \dlds\thepay\api\dataApi\TpValueFormatter::format('int', $state);
+        $this->state = TpValueFormatter::format('int', $state);
     }
+
 }
