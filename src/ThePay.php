@@ -144,6 +144,50 @@ class ThePay extends \yii\base\Component
     }
 
     /**
+     * @param interfaces\ThePayPaymentSourceInterface $source
+     * @param bool $returnUrl
+     * @return string
+     */
+    public function enforceCreditCardUrl(interfaces\ThePayPaymentSourceInterface $source, $returnUrl = false)
+    {
+        $payments = [];
+
+        $paymentHandler = ThePayProxy::instance($source->getSourceId());
+
+        if ($paymentHandler->getPayments()) {
+            $payments = $paymentHandler->getPayments();
+        }
+
+        foreach ($payments as $payment) {
+
+            if ($payment->isDone()) {
+                continue;
+            }
+
+            if ($payment->getPaymentMethod() != self::PAYMENT_TYPE_CREDITCARD) {
+                continue;
+            }
+
+            $instructions = $this->getPaymentInstructions($payment->getId());
+
+            if (!$instructions) {
+                continue;
+            }
+
+            $info = $instructions->getPaymentInfo();
+
+            if (!$info || !$info->getPaymentPageUrl()) {
+                continue;
+            }
+
+            return $info->getPaymentPageUrl();
+        }
+
+        return $this->getApiHandler()->getUrl($source, $returnUrl, ThePay::PAYMENT_TYPE_CREDITCARD);
+
+    }
+
+    /**
      * Retrieves payments
      * @param array $params search params
      */

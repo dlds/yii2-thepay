@@ -8,12 +8,11 @@
 
 namespace dlds\thepay\handlers;
 
+use dlds\thepay\api\helpers\TpDataApiHelper;
+use dlds\thepay\api\TpPayment;
 use dlds\thepay\api\TpPermanentPayment;
-use dlds\thepay\handlers\ThePayGatewayHandler;
 use dlds\thepay\interfaces\ThePayPaymentInterface;
 use dlds\thepay\interfaces\ThePayPaymentSourceInterface;
-use dlds\thepay\api\TpPayment;
-use dlds\thepay\api\helpers\TpDataApiHelper;
 
 /**
  * This is the main class of the dlds\mlm component that should be registered as an application component.
@@ -82,7 +81,7 @@ class ThePayApiHandler
     /**
      * Retrieves payment url
      */
-    public function getUrl(ThePayPaymentSourceInterface $source, $returnUrl = false)
+    public function getUrl(ThePayPaymentSourceInterface $source, $returnUrl = false, $methodId = false)
     {
         $tpp = new TpPayment($this->apiConfig);
         $tpp->setValue($source->getSourceAmount());
@@ -92,6 +91,10 @@ class ThePayApiHandler
         $tpp->setCustomerEmail($source->getSourceCustomerEmail());
         $tpp->setIsRecurring($source->getSourceIsRecurring());
         $tpp->setDeposit($source->getSourceIsDeposit());
+
+        if ($methodId) {
+            $tpp->setMethodId($methodId);
+        }
 
         if ($returnUrl) {
             $tpp->setReturnUrl($returnUrl);
