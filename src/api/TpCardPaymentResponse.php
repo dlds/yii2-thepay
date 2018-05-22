@@ -7,8 +7,12 @@ class TpCardPaymentResponse
     protected $status;
     protected $errorDescription;
 
-    function __construct(\stdClass $data)
+    function __construct($data)
     {
+        if (is_array($data)) {
+            $data = (object)$data;
+        }
+
         $this->status = $data->status;
         if (property_exists($data, 'errorDescription')) {
             $this->errorDescription = $data->errorDescription;

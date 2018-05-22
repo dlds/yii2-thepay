@@ -18,19 +18,19 @@ class TpCardHelper
 
     public static function depositPayment(TpMerchantConfig $config, $merchantData)
     {
-        $client = new \SoapClient($config->webServicesWsdl);
+        $client = new \SoapClient($config->webServicesWsdl, ['trace' => YII_ENV_DEV]);
         $signature = static::getSignature(array(
-            'merchantId' => $config->merchantId,
-            'accountId' => $config->accountId,
-            'merchantData' => $merchantData,
-            'password' => $config->password
+            'merchantId' => (int)$config->merchantId,
+            'accountId' => (int)$config->accountId,
+            'merchantData' => (string)$merchantData,
+            'password' => (string)$config->password
         ));
-        $result = $client->cardDepositPaymentRequest(array(
-            'merchantId' => $config->merchantId,
-            'accountId' => $config->accountId,
-            'merchantData' => $merchantData,
-            'signature' => $signature
-        ));
+        $result = $client->__soapCall('cardDepositPaymentRequest', [
+            'merchantId' => (int)$config->merchantId,
+            'accountId' => (int)$config->accountId,
+            'merchantData' => (string)$merchantData,
+            'signature' => (string)$signature
+        ]);
         if (!$result) {
             throw new TpException();
         }
@@ -39,19 +39,19 @@ class TpCardHelper
 
     public static function stornoPayment(TpMerchantConfig $config, $merchantData)
     {
-        $client = new \SoapClient($config->webServicesWsdl);
+        $client = new \SoapClient($config->webServicesWsdl, ['trace' => YII_ENV_DEV]);
         $signature = static::getSignature(array(
-            'merchantId' => $config->merchantId,
-            'accountId' => $config->accountId,
-            'merchantData' => $merchantData,
-            'password' => $config->password
+            'merchantId' => (int)$config->merchantId,
+            'accountId' => (int)$config->accountId,
+            'merchantData' => (string)$merchantData,
+            'password' => (string)$config->password
         ));
-        $result = $client->cardStornoPaymentRequest(array(
-            'merchantId' => $config->merchantId,
-            'accountId' => $config->accountId,
-            'merchantData' => $merchantData,
-            'signature' => $signature
-        ));
+        $result = $client->__soapCall('cardStornoPaymentRequest', [
+            'merchantId' => (int)$config->merchantId,
+            'accountId' => (int)$config->accountId,
+            'merchantData' => (string)$merchantData,
+            'signature' => (string)$signature
+        ]);
         if (!$result) {
             throw new TpException();
         }
@@ -60,23 +60,23 @@ class TpCardHelper
 
     public static function createNewRecurrentPayment(TpMerchantConfig $config, $merchantData, $newMerchantData, $value)
     {
-        $client = new \SoapClient($config->webServicesWsdl, ['trace' => 1]);
+        $client = new \SoapClient($config->webServicesWsdl, ['trace' => YII_ENV_DEV]);
         $signature = static::getSignature([
-            'merchantId' => $config->merchantId,
-            'accountId' => $config->accountId,
-            'merchantData' => $merchantData,
-            'newMerchantData' => $newMerchantData,
-            'value' => $value,
-            'password' => $config->password,
+            'merchantId' => (int)$config->merchantId,
+            'accountId' => (int)$config->accountId,
+            'merchantData' => (string)$merchantData,
+            'newMerchantData' => (string)$newMerchantData,
+            'value' => (float)$value,
+            'password' => (string)$config->password
         ]);
 
         $result = $client->__soapCall('cardCreateRecurrentPaymentRequest', [
-            'merchantId' => $config->merchantId,
-            'accountId' => $config->accountId,
-            'merchantData' => $merchantData,
-            'newMerchantData' => $newMerchantData,
-            'value' => $value,
-            'signature' => $signature,
+            'merchantId' => (int)$config->merchantId,
+            'accountId' => (int)$config->accountId,
+            'merchantData' => (string)$merchantData,
+            'newMerchantData' => (string)$newMerchantData,
+            'value' => (float)$value,
+            'signature' => (string)$signature,
         ]);
 
         if (!$result) {
@@ -90,4 +90,33 @@ class TpCardHelper
         return new TpCardPaymentResponse($result);
     }
 
+    /**
+     *
+     * @param TpMerchantConfig $config
+     * @param ineter $paymentId
+     * @return TpCardInfoResponse
+     * @throws TpException
+     */
+    public static function getCardInfo(TpMerchantConfig $config, $paymentId)
+    {
+        $client = new \SoapClient($config->webServicesWsdl, ['trace' => YII_ENV_DEV]);
+        $signature = static::getSignature(array(
+            'merchantId' => (int)$config->merchantId,
+            'accountId' => (int)$config->accountId,
+            'paymentId' => $paymentId,
+            'password' => $config->password,
+        ));
+
+        $result = $client->__soapCall('getCardInfoRequest', [
+            'merchantId' => (int)$config->merchantId,
+            'accountId' => (int)$config->accountId,
+            'paymentId' => (int)$paymentId,
+            'signature' => (string)$signature
+        ]);
+
+        if (!$result) {
+            throw new TpException();
+        }
+        return new TpCardInfoResponse($result);
+    }
 }
