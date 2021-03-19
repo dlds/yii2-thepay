@@ -23,7 +23,7 @@ class TpMerchantConfig
      * Demo credentials
      */
     const DEMO_MERCHANT_ID = 1;
-    const DEMO_ACCOUNT_ID = 1;
+    const DEMO_ACCOUNT_ID = 3;
     const DEMO_PASSWORD = 'my$up3rsecr3tp4$$word';
     const DEMO_PASSWORD_DATA_API = 'my$up3rsecr3tp4$$word';
 
