@@ -10,7 +10,6 @@ namespace dlds\thepay;
 
 use dlds\thepay\api\helpers\TpCardHelper;
 use dlds\thepay\api\helpers\TpPermanentPaymentHelper;
-use dlds\thepay\api\TpMerchantConfig;
 
 /**
  * This is the main class of the dlds\thepay component
@@ -77,12 +76,6 @@ class ThePay extends \yii\base\Component
      * @var string data api password
      */
     public $dataApiPassword;
-
-    public $webServicesWsdl = TpMerchantConfig::URL_WSDL_PROD;
-
-    public $dataWebServicesWsdl = TpMerchantConfig::URL_WSDL_DATA_PROD;
-
-    public $gateUrl = TpMerchantConfig::URL_GATE_PROD;
 
     /**
      * @var boolean indicates if demo mode is active
@@ -245,7 +238,7 @@ class ThePay extends \yii\base\Component
      */
     protected function getApiHandler()
     {
-        return handlers\ThePayApiHandler::instance($this->merchantId, $this->accountId, $this->password, $this->dataApiPassword, $this->demo, $this->webServicesWsdl, $this->dataWebServicesWsdl, $this->gateUrl);
+        return handlers\ThePayApiHandler::instance($this->merchantId, $this->accountId, $this->password, $this->dataApiPassword, $this->demo);
     }
 
     /**

@@ -9,7 +9,6 @@
 namespace dlds\thepay\handlers;
 
 use dlds\thepay\api\helpers\TpDataApiHelper;
-use dlds\thepay\api\TpMerchantConfig;
 use dlds\thepay\api\TpPayment;
 use dlds\thepay\api\TpPermanentPayment;
 use dlds\thepay\interfaces\ThePayPaymentInterface;
@@ -39,26 +38,15 @@ class ThePayApiHandler
      * @param string $posId
      * @param string $posAuthKey
      */
-    private function __construct(
-        $merchantId,
-        $accountId,
-        $password,
-        $dataApiPassword,
-        $demo,
-        $webServicesWsdl = TpMerchantConfig::URL_WSDL_PROD,
-        $dataWebServicesWsdl = TpMerchantConfig::URL_WSDL_DATA_PROD,
-        $gateUrl = TpMerchantConfig::URL_GATE_PROD
-    ) {
+    private function __construct($merchantId, $accountId, $password, $dataApiPassword, $demo)
+    {
         $this->apiConfig = new \dlds\thepay\api\TpMerchantConfig();
 
         if ($demo) {
             $this->apiConfig->setDemoCredentials();
         } else {
-            $this->apiConfig->setCredentials($merchantId, $accountId, $password, $dataApiPassword, $webServicesWsdl, $dataWebServicesWsdl, $gateUrl);
+            $this->apiConfig->setCredentials($merchantId, $accountId, $password, $dataApiPassword);
         }
-
-        var_dump($this->apiConfig);
-        die();
     }
 
     /**
@@ -70,21 +58,12 @@ class ThePayApiHandler
      * @param boolean $demo
      * @return ThePayApiHandler
      */
-    public static function instance(
-        $merchantId,
-        $accountId,
-        $password,
-        $dataApiPassword,
-        $demo,
-        $webServicesWsdl = TpMerchantConfig::URL_WSDL_PROD,
-        $dataWebServicesWsdl = TpMerchantConfig::URL_WSDL_DATA_PROD,
-        $gateUrl = TpMerchantConfig::URL_GATE_PROD
-    ) {
-        $hash = md5($merchantId . $accountId . $password . $dataApiPassword . $demo . $webServicesWsdl . $dataWebServicesWsdl . $gateUrl);
+    public static function instance($merchantId, $accountId, $password, $dataApiPassword, $demo)
+    {
+        $hash = md5($merchantId . $accountId . $password . $dataApiPassword . $demo);
 
         if (!self::$_instance[$hash]) {
-            self::$_instance[$hash] = new self($merchantId, $accountId, $password, $dataApiPassword, $demo,
-                $webServicesWsdl, $dataWebServicesWsdl, $gateUrl);
+            self::$_instance[$hash] = new self($merchantId, $accountId, $password, $dataApiPassword, $demo);
         }
 
         return self::$_instance[$hash];
