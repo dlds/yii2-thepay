@@ -3,7 +3,7 @@
     "description": "Yii2 ThePay gateway integration",
     "keywords": ["yii2", "thepay", "integration"],
     "type": "yii2-extension",
-    "license": "BSD",
+    "license": "MIT",
     "support": {
         "issues": "https://github.com/dlds/yii2-thepay/issues",
         "wiki": "https://github.com/dlds/yii2-thepay/wiki",
